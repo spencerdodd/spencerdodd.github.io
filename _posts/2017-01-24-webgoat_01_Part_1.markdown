@@ -89,7 +89,7 @@ So we have previously shown that we can split a single request into two separate
 
 Remember that in our first HTTP splitting example, the truncated response for the redirect resource was matched to our intial request. This left our payload response "on the wire" so to speak, as there was not a matching request for this resource. In a naive attack, the next request for a resource would be matched to our payload response and the payload would be served to whoever sent that request. However, we want to maximize the impact of our attack. Enter caching.
 
-Caching is a way that the webserver serves the most up-to-date version of a resource to users of the site. Any requests that are sent for a static resource are served the cached version of the resource. Using HTTP splitting, we can perform a "cache poisoning" attack, in which we replace the expected cache of a resource with our malicious version. This is done by adding a "Last-Modified" header to the forged request with a date in the future.
+Caching is a way that the webserver serves the most up-to-date version of a resource to users of the site. Any requests that are sent for a resource on a webserver are served the cached version of the resource. Using HTTP splitting, we can perform a "cache poisoning" attack, in which we replace the expected cache of a resource with our malicious version. This is done by adding a "Last-Modified" header to the forged request with a date in the future.
 
 So, now our attack looks like this:
 
@@ -151,7 +151,9 @@ When we send the malicious request, it is matched to the original redirect respo
 This can be much more serious than a simple defacement like we performed here. Alternatively, an attacker could append JavaScript to perform cross-site scripting attacks to steal cookies or other sensitive user data. In order to prevent this attack, any user-controlled data that can end up in a request header needs to be sanitized to prevent insertion of carriage-return and linefeed characters.
 
 ### Resources
+
 1 [HTTP Response Splitting Whitepaper][http-splitting-whitepaper]
+
 2 [OWASP HTTP Response Splitting][owasp-splitting]
 
 [http-splitting-whitepaper]:https://dl.packetstormsecurity.net/papers/general/whitepaper_httpresponse.pdf
