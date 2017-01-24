@@ -53,7 +53,7 @@ Alright, so we are being redirected to the location specified by the 'Location' 
 Location: http://192.168.56.101/WebGoat/attack?Screen=3&menu=100&fromRedirect=yes&language=test
 ```
 
-Aha! One thing should pop out at us here, and that is the fact that our form input ("test") is found sitting right at the end of the Location header. Now while this request takes us to the page intended by the server, we can manipulate this behaviour by abusing the HTML parsing mechanism, or the webcache.
+Aha! One thing should pop out at us here, and that is the fact that our form input ("test") is found sitting right at the end of the Location header. Now while this request takes us to the page intended by the server, we can manipulate this behaviour by abusing the response parsing mechanism, or the webcache.
 
 The webcache sits between the user and the webapplication, parsing responses from the webapplication to hand back to users. The exploit that we are abusing lies in tricking the webcache to hand back two responses from a single request. If we are allowed to insert carriage return (%0a) and linefeed (%0d) characters into our request, when the webcache handles the redirect response we can trick it into thinking that there should be two responses by truncating the original response and adding another completely attacker-controlled response to the webcache.
 
