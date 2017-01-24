@@ -8,7 +8,7 @@ This is the first entry in a series of posts that will be focused on my working 
 
 A little bit about my setup:
 
-I am going to be doing most of this on my 2015 Macbook Pro that I am single-booting Ubuntu 16.04 Xenial on. I have a couple quality of life improvements like macfanctld that keeps my CPU from frying and some window scaling adjustments to keep my eyes from bleeding everytime I try to read something on an app that tries to scale to the native Retina DPI (*cough* most Java-based apps I use). I still only get ~2hrs on a full charge, but I think that using Linux as my main OS instead of VM'ing forces me to learn and experiment more.
+I am going to be doing most of this on my 2015 Macbook Pro that I am single-booting Ubuntu 16.04 Xenial on. I have a couple quality of life improvements like macfanctld that keeps my CPU from frying and some window scaling adjustments to keep my eyes from bleeding everytime I try to read something on an app that tries to scale to the native Retina DPI (*cough* most Java-based apps). I still only get ~2hrs on a full charge, but I think that using Linux as my main OS instead of VM'ing forces me to learn and experiment more.
 
 Most of my scripting and text editing is done in [Sublime Text 3][sublime-text-3], which is an awesome light ide. Some of the heavier project Python dev (like my very early-stage torrent client) I do in JetBrains' fully-fledged Pycharm IDE due to quality-of-life improvements like code-completion, error-checking, etc.
 
