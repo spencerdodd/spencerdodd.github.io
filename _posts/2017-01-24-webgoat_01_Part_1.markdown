@@ -84,8 +84,6 @@ Content-Length: 17
 
 Now, the webcache only saw one request sent to the webserver by us (the attacker). Therefore our redirect is handled normally and we are served the cached response, which is the redirect to the location specified in the Location header. However, if we immediately ask for the resource again the webserver will match this new request with the second malicious response and cache the malicious response as the proper response for the requested resource. Now all subsequent requests for the resource will be served the malicious response that we crafted.
 
-![pwnd][success]
+![][http://imgur.com/a/xs9Nw | width=500]
 
 This can be much more serious than a simple defacement like we performed here. Alternatively, an attacker could append JavaScript to perform cross-site scripting attacks to steal cookies or other sensitive user data. In order to prevent this attack, any user-controlled data that can end up in a request header needs to be sanitized to prevent insertion of carriage-return and linefeed characters.
-
-[success]:https://github.com/spencerdodd/spencerdodd.github.io/blob/master/images/part1pwnd.jpg
