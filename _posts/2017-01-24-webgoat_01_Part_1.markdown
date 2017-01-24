@@ -88,4 +88,4 @@ Now, the webcache only saw one request sent to the webserver by us (the attacker
 
 This can be much more serious than a simple defacement like we performed here. Alternatively, an attacker could append JavaScript to perform cross-site scripting attacks to steal cookies or other sensitive user data. In order to prevent this attack, any user-controlled data that can end up in a request header needs to be sanitized to prevent insertion of carriage-return and linefeed characters.
 
-[success]:https://github.com/spencerdodd/spencerdodd.github.io/images/http_response_splitting.jpg
+[success]:https://github.com/spencerdodd/spencerdodd.github.io/blob/master/images/http-response-splitting.jpg
