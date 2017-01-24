@@ -4,12 +4,11 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+My day job is as a Research Associate biologist at the [Broad Institute][broad-institute]. It's mainly wet-lab work on cardiovascular disease, but my undergraduate research had a basis in bioinformatics. Now I use programming to simplify my job, help answer questions, and keep myself busy when I'm not wearing a white coat.
 
-You can find the source code for the Jekyll new theme at:
-{% include icon-github.html username="jekyll" %} /
-[minima](https://github.com/jekyll/minima)
+Security has always been an interest of mine. Electronic cultural permeation has only magnified the importance, and shortcomings, of security in the modern digital world. The subject matter and its implications are fascinating, and this blog is based on my forays into the field.
 
-You can find the source code for Jekyll at
-{% include icon-github.html username="jekyll" %} /
-[jekyll](https://github.com/jekyll/jekyll)
+You can check out some of my gnarly code on [github][github]. But be warned, it's a biologist's code.
+
+[broad-institute]:https://www.broadinstitute.org/
+[github]:https://github.com/spencerdodd/
