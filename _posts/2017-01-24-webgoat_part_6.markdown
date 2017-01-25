@@ -6,6 +6,7 @@ categories: webgoat
 ---
 # Code Quality
 Instructions
+
 * Developers are notorious for leaving statements like FIXME's, TODO's, Code Broken, Hack, etc... inside the source code.  Review the source code for any comments denoting  passwords, backdoors, or something doesn't work right.  Below is an example of a forms based authentication form. Look for clues to help you log in. 
 
 Alright let's take a look at the source and search for any of those strings.

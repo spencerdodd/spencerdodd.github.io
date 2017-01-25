@@ -6,6 +6,7 @@ categories: webgoat
 ---
 # Authentication Flaws: Forgot Password
 Instructions:
+
 * Users can retrieve their password if they can answer the secret question properly. There is no lock-out mechanism on this 'Forgot Password' page. Your username is 'webgoat' and your favorite color is 'red'. The goal is to retrieve the password of another user. 
 
 <img src="{{ site.baseurl }}/images/2017-01-24-webgoat_part_4/landing-page.jpg">
