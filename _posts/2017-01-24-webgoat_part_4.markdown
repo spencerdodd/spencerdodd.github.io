@@ -84,3 +84,16 @@ Let's see if it works!
 <img src="{{ site.baseurl }}/images/2017-01-24-webgoat_part_4/rocked-you.jpg">
 
 rocked.txt
+
+# Basic Authentication
+This lesson is broken on v5.4 (or at least my implementation of it), but it covers the Basic Authentication protocol. Basic Authentication is a simple method for enforcing access controls on server resources. The basic logical flow is as follows:
+
+1. User requests a resource from the server
+* I would like this page
+2. Server responds with HTTP 401 Unauthorized
+* I don't know who you are, or if you can have that
+3. User sends request with Authorization header
+* Authorization: Basic ```base64(user:passwd)```
+4. Server sends response according to authorization status
+
+It is important to remember that in HTTP everything is transmitted in cleartext, so this does not prevent anyone from stealing login credentials. HTTPS should be used in production systems.
