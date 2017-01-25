@@ -21,6 +21,7 @@ Well, nothing special there going on. So, let's queue up requests for both Jeff 
 Burp shows me that the request for Jeff went in first, followed by the request for Dave. Both windows received Dave's information.
 
 Here is some psuedocode of the server side code for this challenge:
+
 ```
 current_user = None
 
