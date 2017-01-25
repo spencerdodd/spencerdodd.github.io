@@ -7,11 +7,9 @@ categories: webgoat
 # AJAX Security Part 5: Dom Injection
 Alright, we're given the following instructions for this challenge:
 
-* Your victim is a system that takes an activation key to allow you to use it.
-
-* Your goal should be to try to get to enable the activate button.
-
-* Take some time to see the HTML source in order to understand how the key validation process works.
+- Your victim is a system that takes an activation key to allow you to use it.
+- Your goal should be to try to get to enable the activate button.
+- Take some time to see the HTML source in order to understand how the key validation process works.
 
 Let's take a look at the HTML that defines the ```Activate``` button
 
@@ -98,13 +96,10 @@ Nice!
 # AJAX Security Part 7: JSON Injection
 JavaScript Object Notation, or JSON, is a data-interchange format that a lot of applications use for passing information back and forth. It is language-independent, which is desirable for applications, clients, and servers talking to each other when it can't be guaranteed that they all use the same backend language. In this challenge, we have a flight to catch:
 
-* You are traveling from Boston, MA- Airport code BOS to Seattle, WA - Airport code SEA.
-
-* Once you enter the three digit code of the airport, an AJAX request will be executed asking for the ticket price.
-
-* You will notice that there are two flights available, an expensive one with no stops and another cheaper one with 2 stops.
-
-* Your goal is to try to get the one with no stops but for a cheaper price. 
+- You are traveling from Boston, MA- Airport code BOS to Seattle, WA - Airport code SEA.
+- Once you enter the three digit code of the airport, an AJAX request will be executed asking for the ticket price.
+- You will notice that there are two flights available, an expensive one with no stops and another cheaper one with 2 stops.
+- Your goal is to try to get the one with no stops but for a cheaper price. 
 
 At first glance, it looks to me like another case of response interception and alteration. So firing up Burp (or I guess just keeping it open), I intercepted the request for a flight from BOS to SEA. Then I marked the server response to be intercepted and took a look:
 

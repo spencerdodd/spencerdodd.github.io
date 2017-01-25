@@ -7,13 +7,10 @@ categories: webgoat
 # AJAX Security Part 8: Silent Transaction Attacks
 Instructions:
 
-* This is a sample internet banking application - money transfer page.
-
-* It shows below your balance, the account you are transferring to and amount you will transfer.
-
-* The application uses AJAX to submit the transaction after doing some basic client side validations.
-
-* Your goal is to try to bypass the user's authorization and silently execute the transaction.
+- This is a sample internet banking application - money transfer page.
+- It shows below your balance, the account you are transferring to and amount you will transfer.
+- The application uses AJAX to submit the transaction after doing some basic client side validations.
+- Your goal is to try to bypass the user's authorization and silently execute the transaction.
 
 Aha, client side validations. Sounds like we can mess with it, or at the very least read it and look for some exploitability. Nice! Let's take a look at the source.
 
@@ -94,7 +91,7 @@ So a legitimate attack might look more like a phishing campaign to members of We
 # AJAX Security Part 9: Dangerous Use of Eval
 Instructions:
 
-* For this exercise, your mission is to come up with some input containing a script. You have to try to get this page to reflect that input back to your browser, which will execute the script. In order to pass this lesson, you must 'alert()' document.cookie.
+- For this exercise, your mission is to come up with some input containing a script. You have to try to get this page to reflect that input back to your browser, which will execute the script. In order to pass this lesson, you must 'alert()' document.cookie.
 
 Alright, so we're started off with a shopping cart and some credit card info
 

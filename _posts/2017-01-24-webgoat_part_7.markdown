@@ -7,7 +7,7 @@ categories: webgoat
 # Concurrency: Thread Safety Problems
 Instructions:
 
-* The user should be able to exploit the concurrency error in this web application and view login information for another user that is attempting the same function at the same time. This will require the use of two browsers. Valid user names are 'jeff' and 'dave'.
+- The user should be able to exploit the concurrency error in this web application and view login information for another user that is attempting the same function at the same time. This will require the use of two browsers. Valid user names are 'jeff' and 'dave'.
 
 Let's take a peek at how the request to the server is formed:
 
@@ -44,7 +44,7 @@ This is why you need to take careful consideration into designing threaded progr
 # Concurrency: Shopping Cart Concurrency Flaw
 Instructions:
 
-*  For this exercise, your mission is to exploit the concurrency issue which will allow you to purchase merchandise for a lower price.
+-  For this exercise, your mission is to exploit the concurrency issue which will allow you to purchase merchandise for a lower price.
 
 <img src="{{ site.baseurl }}/images/2017-01-24-webgoat_part_7/cart-init.jpg">
 

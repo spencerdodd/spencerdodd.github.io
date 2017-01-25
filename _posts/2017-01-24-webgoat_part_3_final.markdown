@@ -7,7 +7,7 @@ categories: coding security owasp bwa
 # AJAX Security Part 11: Insecure Client Storage Part 1
 Instructions:
 
-* STAGE 1: For this exercise, your mission is to discover a coupon code to receive an unintended discount.
+- STAGE 1: For this exercise, your mission is to discover a coupon code to receive an unintended discount.
 
 First things first, lets look at the source and see if there is any javascript that will give us a clue as to what we're looking for. The entry field for a coupon has a function in it called ```isValidCoupon```. 
 
