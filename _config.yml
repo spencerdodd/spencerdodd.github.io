@@ -16,7 +16,7 @@
 title: byte-sized
 #email: your-email@domain.com
 description: > # this means to ignore newlines until "baseurl:"
-  This is a blog about my journey into the security world. Byte by byte.
+  forays into cybersecurity.
 baseurl: "/spencerdodd.github.io"
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb

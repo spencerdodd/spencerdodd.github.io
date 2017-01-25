@@ -2,7 +2,7 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge"
 date:   2017-01-23 22:33:00 -0500
-categories: coding security owasp bwa
+categories: webgoat
 ---
 This is the first entry in a series of posts that will be focused on my working through the Open Web Application Security Project's WebGoat (v5.4). I do realize that there is a newer version (stable 7, dev 8?), but 5.4 came in the latest version of the OWASP Broken Web Applications Project. I intend to work my way through all of the challenges in the OWASP BWA over the course of the next few months after work and in my spare time. I will try to make enough progress to post meaningful updates to this blog on a daily to weekly basis.
 
@@ -19,7 +19,7 @@ So I guess what I'm trying to say is,
 {% highlight python %}
 #!/usr/bin/env python
 def main()
-  print ("Hello, world!")
+  print ("48656c6c6f2c20776f726c64".decode("hex"))
 
 main()
 {% endhighlight %}

@@ -1,23 +1,23 @@
 ---
 layout: post
 title:  "OWASP BWA WebGoat Challenge Part 2"
-date:   2017-01-24 00:50:00 -0500
-categories: coding security owasp bwa
+date:   2017-01-24 00:55:00 -0500
+categories: webgoat
 ---
 # Access Control Flaws Part 1: Bypassing Path-based Authentication
 Whew, this looks like it has a little less research involved that the HTTP Response Splitting attack. We are given a window with a list of files that belong to the directory ```/var/lib/tomcat6/webapps/WebGoat/lesson_plans/English```. We are told that our current login, 'user', is given access to the ```lesson_plans/English``` directory. Our goal is to access files that are not in our granted directory.
 
-<img src= "{{ site.baseurl }}/images/part2window.jpg">
+<img src= "{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/part2window.jpg">
 
 So it appears that our access is limited mainly by selectability in the window. However, let's take a look at the request that is sent when we select an image from the window:
 
-<img src="{{ site.baseurl }}/images/part2request.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/part2request.jpg">
 
 So it looks like our request simply has the file name, and the actual accession of the file done by the server prepends the authenticated path to the given file name. Fortunately for us, there is an in-path modifier for parent/child directory traversal: ```..``` Using this trick, let's see if we can access things outside of the directory we are dropped into in the window.
 
 First I took a look at the directory structure in the VM. I'm not sure if that is allowed, but I couldn't get the tomcat link to work (I've found a few discrepancies between intended and actual behaviour with some paths and lessons on this version of WebGoat). After searching around I found that there is a German directory in our ```.../lesson_plans/``` directory. So I craft up another request that takes use of the ```..``` command for parent of the working directory:
 
-<img src=" {{ site.baseurl }}/images/part2requestattempt.jpg">
+<img src=" {{ site.baseurl }}/2017-01-24-webgoat_part_2/images/part2requestattempt.jpg">
 
 And bingo! We have access.
 
@@ -47,7 +47,7 @@ employee_id=111&password=john&action=Login
 
 We are presented with the admin control page.
 
-<img src="{{ site.baseurl }}/images/admin-page.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/admin-page.jpg">
 
 Next, we delete Tom's profile:
 
@@ -71,7 +71,7 @@ Hmm. It looks like there is no verification that the user requesting the deletio
 
 So we log back into Tom's account and press the ```ViewProfile``` button. Intercepting the request, we change the action to DeleteProfile:
 
-<img src="{{ site.baseurl }}/images/tom-delete.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/tom-delete.jpg">
 
 Got 'em.
 
@@ -96,25 +96,25 @@ employee_id=105&action=ViewProfile
 ```
 Assuming these are sequentially assigned, why don't we just try to change it to another close number that should be in our user set? So we alter the ```employee_id``` field to 103 to try to take a look at Curly's profile, and:
 
-<img src="{{ site.baseurl }}/images/tom-view.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/tom-view.jpg">
 
 Boom. Curly's paid/owed ratio isn't too hot.
 
 # Access Control Flaws Final: Remote Admin Access
 The goal for this final section is to access the admin interface for WebGoat. One of the given hints is that the admin interface is hackable via URL. After messing around for a while (too long to admit), the idea of URL-field specifications came to mind. I tried something super simple, and appended ```&admin=true``` onto the end of the URL...
 
-<img src="{{ site.baseurl }}/images/admin-functions.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/admin-functions.jpg">
 
 Well, alright then. So we get access to this whole set of admin functions. Trying ```User Information```, we intercept the request and add ```&admin=true``` onto it (to ensure we keep our admin status). This yields us a list of users:
 
-<img src="{{ site.baseurl }}/images/admin-function-users.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/admin-function-users.jpg">
 
 While ```Product Information``` (again appending the admin tag) yields us this list:
 
-<img src="{{ site.baseurl }}/images/admin-function-products.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/admin-function-products.jpg">
 
 Clicking ```Adhoc Query``` leads us to a page where we are supposed to enter a SQL statement to post to the message board
 
-<img src="{{ site.baseurl }}/images/admin-function-sql.jpg">
+<img src="{{ site.baseurl }}/2017-01-24-webgoat_part_2/images/admin-function-sql.jpg">
 
 However, unfortunately the functionality is broken in my version of WebGoat. Maybe I will try to get a newer version running and come back at some point to replace any broken parts of 5.4 with the (hopefully) patched challenges.
