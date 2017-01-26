@@ -9,12 +9,13 @@ Instructions:
 
 Below is an example of a standard search feature.
 Using XSS and HTML insertion, your goal is to:
+
 - Insert html to that requests credentials
 - Add javascript to actually collect the credentials
 - Post the credentials to http://localhost/webgoat/catcher?PROPERTY=yes...
 - To pass this lesson, the credentials must be posted to the catcher servlet.
 
-Nice, some more XSS. I'm actually really enjoying the XSS challenges. They seem to require a bit more craftiness than some of the other challenges, and this one looks like no exception. Credential grabbing and javascript that passes the creds? Cool!
+Nice, some more XSS. I'm actually really enjoying the XSS challenges. They seem to require a bit more craftiness than some of the other challenges, and this one looks like no exception. Login spoofing, credential grabbing, and sneaky javascript? Cool!
 
 First off, let's try a test search and see what our attack vector looks like:
 
