@@ -146,7 +146,7 @@ Accept-Language: en-US,en;q=0.5
 
 When we send the malicious request, it is matched to the original redirect response. Now we have another response waiting to match with a request. Now our second request is received and matched with our malicious response. The webcache sees that the "Last-Modified" header is present in the response, and the date is more recent than the existing cached version, so it replaces the cache for the requested resource ("index.hmtl") with the malicious response ("<html>pwnd</html>").
 
-<img src="{{ site.baseurl }}/2017-01-24_webgoat_part_1/images/part1pwnd.jpg">
+<img src="{{ site.baseurl }}/images/2017-01-24-webgoat_part_1/part1pwnd.jpg">
 
 This can be much more serious than a simple defacement like we performed here. Alternatively, an attacker could append JavaScript to perform cross-site scripting attacks to steal cookies or other sensitive user data. In order to prevent this attack, any user-controlled data that can end up in a request header needs to be sanitized to prevent insertion of carriage-return and linefeed characters.
 
