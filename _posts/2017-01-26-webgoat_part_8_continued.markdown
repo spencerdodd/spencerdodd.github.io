@@ -12,8 +12,6 @@ Instructions:
 
 A full lab section on XSS! Let's start off by looking at what a stored XSS attack is. 
 
-< info about a stored XSS attack here >
-
 From OWASPs page on [Testing for Stored XSS][stored-xss], a stored XSS attack generally follows these major steps:
 
 - Attacker stores malicious code into the vulnerable page
@@ -21,7 +19,7 @@ From OWASPs page on [Testing for Stored XSS][stored-xss], a stored XSS attack ge
 - User visits vulnerable page
 - Malicious code is executed by the user's browser
 
-Let's navigate our way to the ```EditProfile``` page and see what we have going on.
+So our goal is persistent injection of malicious code. Let's navigate our way to the ```EditProfile``` page and see what we have going on and what we can exploit.
 
 <img src="{{ site.baseurl }}/images/2017-01-26-webgoat_part_8_continued/edit-profile.jpg">
 
@@ -72,6 +70,53 @@ Alright! Nice. So now that our alert is inserted into the webserver's data for T
 
 Got 'em!
 
+# Reflected XSS Attack
+Instructions:
+
+-Use a vulnerability on the Search Staff page to craft a URL containing a reflected XSS attack. Verify that another employee using the link is affected by the attack.
+
+Reflected Cross-site Scripting (XSS) occur when an attacker injects browser executable code within a single HTTP response. The injected attack is not stored within the application itself; it is non-persistent and only impacts users who open a maliciously crafted link or third-party web page. The attack string is included as part of the crafted URI or HTTP parameters, improperly processed by the application, and returned to the victim. [Source][owasp-reflected-xss]
+
+So, we need to create a search term that will perform an XSS attack on the resolved page. Let's look at the page we need to manipulate:
+
+<img src="{{ site.baseurl }}/images/2017-01-26-webgoat_part_8_continued/search-page.jpg">
+
+And when we throw some input at it
+
+<img src="{{ site.baseurl }}/images/2017-01-26-webgoat_part_8_continued/search-page-vuln.jpg">
+
+Alright. Pretty simple attack vector. Let's toss a classic XSS pop at it:
+
+```
+<script>alert('XSS');</script>
+```
+
+Which generates this request URL:
+
+```
+192.168.56.101/WebGoat/attack?Screen=20&menu=900&search_name=%3Cscript%3Ealert%28%27xss%27%29%3B%3C%2Fscript%3E&action=FindProfile
+```
+
+And...
+
+<img src="{{ site.baseurl }}/images/2017-01-26-webgoat_part_8_continued/search-page-reflected.jpg">
+
+Boom! Now we can craft whatever malicious JS we want to toss on the end of that URL and phish someone into clicking it.
+
+```
+                       ,-,
+                     ,' /
+                   ,'  (          _          _
+           __...--'     `-....__,'(      _,-'/
+  _,---''''                     ````-._,'  ,'
+,'  o                                  `  <
+`.____  )))                          ...'  \
+   `--..._        .   .__....----''''   `-. \
+          ```7--i-`.  \                    `-`
+ dun-dun     `.(    `-.`.
+               `'      `'
+```
+
 
 
 ### Resources
@@ -82,3 +127,4 @@ Got 'em!
 
 [stored-xss]:https://www.owasp.org/index.php/Testing_for_Stored_Cross_site_scripting_(OTG-INPVAL-002)
 [filter-evasion]:https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#TD
+[owasp-reflected-xss]:https://www.owasp.org/index.php/Testing_for_Reflected_Cross_site_scripting_(OTG-INPVAL-001)
