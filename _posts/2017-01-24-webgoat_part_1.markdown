@@ -2,7 +2,8 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge Part 1"
 date:   2017-01-24 00:01:00 -0500
-categories: webgoat
+author: "coastal"
+header-img: "images/site-resources/webgoat-header.jpg"
 ---
 # HTTP Response Splitting
 HTTP Response splitting is an attack that can be performed on a webserver that does not properly implement sanitization of user input on webpage forms. The specific exploitation that can be performed involves the use of carriage returns (%0a in HTML) and linefeeds (%0d in HTML). 

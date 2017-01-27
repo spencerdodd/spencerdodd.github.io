@@ -2,7 +2,8 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge Part 2"
 date:   2017-01-24 00:55:00 -0500
-categories: webgoat
+author: "coastal"
+header-img: "images/site-resources/webgoat-header.jpg"
 ---
 # Access Control Flaws Part 1: Bypassing Path-based Authentication
 Whew, this looks like it has a little less research involved that the HTTP Response Splitting attack. We are given a window with a list of files that belong to the directory ```/var/lib/tomcat6/webapps/WebGoat/lesson_plans/English```. We are told that our current login, 'user', is given access to the ```lesson_plans/English``` directory. Our goal is to access files that are not in our granted directory.

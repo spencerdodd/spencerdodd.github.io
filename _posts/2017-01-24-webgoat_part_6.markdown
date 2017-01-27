@@ -2,7 +2,8 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge Part 6"
 date:   2017-01-24 19:01:00 -0500
-categories: webgoat
+author: "coastal"
+header-img: "images/site-resources/webgoat-header.jpg"
 ---
 # Code Quality
 Instructions

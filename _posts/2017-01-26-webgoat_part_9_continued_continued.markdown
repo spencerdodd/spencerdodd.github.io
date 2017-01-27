@@ -2,7 +2,8 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge Part 9 Continued (Continued)"
 date:   2017-01-26 20:00:00 -0500
-categories: webgoat
+author: "coastal"
+header-img: "images/site-resources/webgoat-header.jpg"
 ---
 # CSRF Prompt Bypass
 Instructions:
@@ -107,3 +108,9 @@ And when we click it, the funds are transfered using the stolen token!
 So CSRF can be utilized in XSS attacks to leverage the authentication levels of compromised users to perform unwanted actions on the authenticated application.
 
 All your links are belong to us.
+
+### References
+
+[1 XMLHttpRequest Documentation][xml-http-docs]
+
+[xml-http-docs]:https://xhr.spec.whatwg.org/#the-responsetype-attribute

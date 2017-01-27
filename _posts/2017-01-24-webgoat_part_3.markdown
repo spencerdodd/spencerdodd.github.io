@@ -2,7 +2,8 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge Part 3"
 date:   2017-01-24 16:00:00 -0500
-categories: webgoat
+author: "coastal"
+header-img: "images/site-resources/webgoat-header.jpg"
 ---
 # AJAX Security Part 1: DOM-based Cross Site Scripting
 Alright, the last set of challenges seemed a little easy. Here's one that's going to be a little more involved and requires a bit of reading. For starters, we need to find out what AJAX is.

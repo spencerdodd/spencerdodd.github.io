@@ -2,7 +2,8 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge Part 9 (Continued)"
 date:   2017-01-26 20:00:00 -0500
-categories: webgoat
+author: "coastal"
+header-img: "images/site-resources/webgoat-header.jpg"
 ---
 # Cross-Site Request Forgery (CSRF)
 Instructions:
