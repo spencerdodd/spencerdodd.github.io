@@ -29,7 +29,7 @@ POST http://chat-forum.com/change-email.php?new_email=attackers_email HTTP/1.1
 
 Then you make a post on the forum and link your maliciously crafted link in the body. Any user that clicks the link will have their email changed to your email, giving you control of their account (after a ```Forgot Password``` reset). While we cannot execute arbitrary code (which gives us more possibilities and leverage in attack), we can abuse existing server functions that affect our target as the server trusts the user's validity even though we were the ones that crafted the request.
 
-So let's look at applying this to our challenge. We need to craft an email that will contain an invisible image (well almost) that includes a omdified URL to the CSRF challenge that will perform our attack. The challenge URL is as follows:
+So let's look at applying this to our challenge. We need to craft an email that will contain an invisible image (well almost) that includes a modified URL to the CSRF challenge that will perform our attack. The challenge URL is as follows:
 
 ```
 http://192.168.56.101//WebGoat/attack?Screen=52&menu=900
