@@ -1,10 +1,12 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 9 (Final)"
+title:  "OWASP BWA WebGoat Challenge: Cross Site Scripting"
+subtitle: "Cross Site Tracing Attack"
 date:   2017-01-27 13:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"
 ---
+# Cross Site Tracing (XST) Attack
 Instructions:
 
 - Tomcat is configured to support the HTTP TRACE command. Your goal is to perform a Cross Site Tracing (XST) attack. 
@@ -51,6 +53,7 @@ So on an insecure/outdated browser, this attack could likely still be used. Addi
 ### Resources
 
 [1. Trace HTTP Command][w3-trace]
+
 [2. HTTPOnly Cookie Attribute][http-only]
 
 [w3-trace]:https://www.w3.org/Protocols/rfc2616-sec9.html

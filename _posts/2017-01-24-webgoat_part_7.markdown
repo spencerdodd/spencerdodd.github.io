@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 7"
+title:  "OWASP BWA WebGoat Challenge: Concurrency"
+subtitle: "Thread Safety"
 date:   2017-01-24 19:02:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"

@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 3 (Continued)"
+title:  "OWASP BWA WebGoat Challenge: AJAX Security"
+subtitle: "DOM Injection, XML Injection, JSON Injection"
 date:   2017-01-24 17:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"

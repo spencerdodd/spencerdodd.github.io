@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 2"
+title:  "OWASP BWA WebGoat Challenge: Access Control Flaws"
+subtitle: "Path-based, Presentation Level, and Data Level Authentication Bypass"
 date:   2017-01-24 00:55:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"
@@ -98,11 +99,7 @@ employee_id=105&action=ViewProfile
 Assuming these are sequentially assigned, why don't we just try to change it to another close number that should be in our user set? So we alter the ```employee_id``` field to 103 to try to take a look at Curly's profile, and:
 
 <img src="{{ site.baseurl }}/images/2017-01-24-webgoat_part_2/tom-view.jpg">
-
-Boom. Curly's paid/owed ratio isn't too hot.
-
-# Access Control Flaws Final: Remote Admin Access
-The goal for this final section is to access the admin interface for WebGoat. One of the given hints is that the admin interface is hackable via URL. After messing around for a while (too long to admit), the idea of URL-field specifications came to mind. I tried something super simple, and appended ```&admin=true``` onto the end of the URL...
+came to mind. I tried something super simple, and appended ```&admin=true``` onto the end of the URL...
 
 <img src="{{ site.baseurl }}/images/2017-01-24-webgoat_part_2/admin-functions.jpg">
 

@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 1"
+title:  "OWASP BWA WebGoat Challenge: General"
+subtitle: "HTTP Response Splitting and Cache Poisoning"
 date:   2017-01-24 00:01:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"

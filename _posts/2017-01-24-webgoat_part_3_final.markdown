@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 3 (Final)"
+title:  "OWASP BWA WebGoat Challenge: AJAX Security"
+subtitle: "Insecure Client Storage"
 date:   2017-01-24 18:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"

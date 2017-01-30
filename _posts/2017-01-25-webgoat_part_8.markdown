@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 8"
+title:  "OWASP BWA WebGoat Challenge: Cross Site Scripting"
+subtitle: "Phishing with XSS"
 date:   2017-01-26 00:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"

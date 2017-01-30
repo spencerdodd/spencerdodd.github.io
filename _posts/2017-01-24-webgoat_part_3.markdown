@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "OWASP BWA WebGoat Challenge Part 3"
+title:  "OWASP BWA WebGoat Challenge: AJAX Security"
+subtitle: "DOM-based Cross Site Scripting (XSS)"
 date:   2017-01-24 16:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"
