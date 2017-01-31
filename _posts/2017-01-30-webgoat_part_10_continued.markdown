@@ -23,9 +23,9 @@ Cool. So, maybe we can add a new-line character followed by what looks like a su
 test%0aLogin succeeded for username: admin
 ```
 
-Alright! Looks like we've successfully spoofed an admin login. Let's try to inject a little XSS into our input as well:
-
 <img src="{{ site.baseurl }}/images/2017-01-30-webgoat_part_10_continued/test-admin.jpg">
+
+Alright! Looks like we've successfully spoofed an admin login. Let's try to inject a little stored XSS into our input as well:
 
 ```
 test%0aLogin succeeded for username: <script>alert('xss')</script>admin

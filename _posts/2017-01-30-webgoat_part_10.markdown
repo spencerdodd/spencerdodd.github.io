@@ -1,12 +1,11 @@
 ---
 layout: post
 title:  "OWASP BWA WebGoat Challenge: Injection Flaws"
-subtitle: "Command Injection"
+subtitle: "Numeric Injection"
 date:   2017-01-30 00:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"
----
-# Command Injection
+# Numeric Injection
 Instructions:
 
 - The form below allows a user to view weather data. Try to inject an SQL string that results in all the weather data being displayed. 
