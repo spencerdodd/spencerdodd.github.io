@@ -25,10 +25,13 @@ Let's look at a generic SOAP request-response chain and see if we can get some i
 <hr>
 #### Request:
 Pseudo-code:
+
 ```
 doubleAnInteger(123)
 ```
+
 SOAP:
+
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
   <SOAP-ENV:Envelope
@@ -45,13 +48,17 @@ SOAP:
 	</SOAP-ENV:Body>
   </SOAP-ENV:Envelope>
 ```
+
 <hr>
 #### Response
 Pseudo-code:
+
 ```
 246
 ```
+
 SOAP:
+
 ```
 <?xml version="1.0" encoding="UTF-8" ?>
   <SOAP-ENV:Envelope
