@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "OWASP BWA WebGoat Challenge: Session Management Flaws"
-subtitle: "Spoof and Authentication Cookie"
+subtitle: "Spoof an Authentication Cookie"
 date:   2017-02-01 10:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"
