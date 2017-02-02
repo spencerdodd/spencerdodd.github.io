@@ -2,7 +2,7 @@
 layout: post
 title:  "OWASP BWA WebGoat Challenge: Web Services"
 subtitle: "WSDL Scanning / Web Service SAX Injection / SQL Injection"
-date:   2017-02-01 11:00:00 -0500
+date:   2017-02-02 11:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"
 ---
