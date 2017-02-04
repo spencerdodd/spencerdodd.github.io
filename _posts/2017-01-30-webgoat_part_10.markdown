@@ -5,6 +5,7 @@ subtitle: "Numeric Injection"
 date:   2017-01-30 00:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/webgoat-header.jpg"
+---
 # Numeric Injection
 Instructions:
 
