@@ -7,7 +7,7 @@ author: "coastal"
 header-img: "images/site-resources/dvwa-header.jpg"
 ---
 
-After I took a bit of a break from the netsec stuff to work on a personal project, my [BitTorrent client](coast-client), I am back working on some practice apps again. This series I'm going to be focusing on the OWASP's Damn Vulnerable Web App (DVWA). The first challenge in the app is a brute force for a login page. Let's try a test request and intercept the traffic to see how the login functions:
+After I took a bit of a break from the netsec stuff to work on a personal project, my [BitTorrent client](https://github.com/spencerdodd/coast), I am back working on some practice apps again. This series I'm going to be focusing on the OWASP's Damn Vulnerable Web App (DVWA). The first challenge in the app is a brute force for a login page. Let's try a test request and intercept the traffic to see how the login functions:
 
 ```
 GET /dvwa/vulnerabilities/brute/?username=test&password=test&Login=Login HTTP/1.1
@@ -50,7 +50,7 @@ admin3
 admin
 ```
 
-Since we do already know the passwords for these profiles, this is more of an exercise in learning a new tool. For cracking this login we're going to use the Hydra tool. Since we've already written a number of brute-forcing scripts in python and understand how they work at a low-level, let's use Hydra to perform a more robust and 'professional' cracking experience. It is included by default in Kali distributions and has great functionality for network cracking. Taken from the [host site](hydra-link), it is clear that Hydra is a true multi-tool with capabilities to attack: ```telnet, ftp, http, https, smb, several databases, and much more```. Let's see if we can formulate a command for our login page to send it through the Hydra pipeline. 
+Since we do already know the passwords for these profiles, this is more of an exercise in learning a new tool. For cracking this login we're going to use the Hydra tool. Since we've already written a number of brute-forcing scripts in python and understand how they work at a low-level, let's use Hydra to perform a more robust and 'professional' cracking experience. It is included by default in Kali distributions and has great functionality for network cracking. Taken from the [host site](http://sectools.org/tool/hydra/), it is clear that Hydra is a true multi-tool with capabilities to attack: ```telnet, ftp, http, https, smb, several databases, and much more```. Let's see if we can formulate a command for our login page to send it through the Hydra pipeline. 
 
 
 ```
@@ -94,6 +94,3 @@ Hydra (http://www.thc.org/thc-hydra) finished at 2017-02-18 20:11:06
 <img src="{{ site.baseurl }}/images/dvwa/01_brute_force/brute-success.jpg">
 
 And we've got it! Hydra seems like a great tool, is quick, and has a wide variety of supported protocol attacks. I'll probably try to use it more frequently when attacking user/server login protocols.
-
-[coast-client]:https://github.com/spencerdodd/coast
-[hydra-link]:http://sectools.org/tool/hydra/
