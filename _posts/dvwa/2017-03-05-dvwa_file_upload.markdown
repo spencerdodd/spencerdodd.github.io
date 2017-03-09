@@ -100,4 +100,4 @@ http://192.168.56.101/dvwa/vulnerabilities/fi/?page=../../hackable/uploads/sea-e
 
 <img src="{{ site.baseurl }}/images/dvwa/03_file_upload/reverse-shell-catch.jpg">
 
-And we got it! For the next steps, we could try to use privilege escalation to get root, but for now this works as a PoC. I know I'm not too familiar with the meterpreter shell commands...something I need to work on in the near future. 
+And we got it! For the next steps, we could try to use privilege escalation to get root, but for now this works as a PoC. I know I'm not too familiar with the meterpreter shell commands...that is something I will be working on in the near future. 
