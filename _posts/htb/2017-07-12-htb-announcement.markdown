@@ -2,7 +2,7 @@
 layout: post
 title:  "Opaque Progression"
 subtitle: "Hack the Box"
-date:   2017-07-11 12:00:00 -0500
+date:   2017-07-12 12:00:00 -0500
 author: "coastal"
 header-img: "images/htb/htb-header.png"
 ---
