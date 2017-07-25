@@ -2,7 +2,7 @@
 layout: post
 title:  "Process All Access"
 subtitle: "Hack the Box"
-date:   2017-07-25 12:00:00 -0500
+date:   2017-07-25 00:00:00 -0500
 author: "coastal"
 header-img: "images/htb/process-all-access/header.jpg"
 ---
