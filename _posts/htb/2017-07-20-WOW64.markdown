@@ -91,7 +91,7 @@ it's obvious that the call to ```DuplicateHandle``` in ```kernel32.dll``` is not
 
 ```DuplicateHandle``` is a part of the [Windows 32-bit on Windows 64-bit (WoW64)](https://msdn.microsoft.com/en-us/library/windows/desktop/aa384249(v=vs.85).aspx) subsystem that allows 32-bit processes to run on 64-bit versions of Windows. The way it functions is by creating an API that emulates interaction between the 32-bit version of ```Ntdll.dll``` and the kernel of the processor by intercepting kernel calls. This emulation framework is where our error is manifesting.
 
-In the [description](https://msdn.microsoft.com/en-us/library/windows/desktop/aa384231(v=vs.85).aspx) for ```Process Interoperability```, we see that that passing handles across WoW64 includes some subtlety.
+In the [description](https://msdn.microsoft.com/en-us/library/windows/desktop/aa384231(v=vs.85).aspx) for ```Process Interoperability```, we see that that passing handles across WoW64 includes some subtlety. Specifically, that 64-bit handles are not truncated.
 
 	To port handles, which by their nature are local to the computer and would never be used across the 32-bit to 64-bit boundary, use the HANDLE_PTR type instead of the INT_PTR or DWORD_PTR type. This includes porting RPC interfaces passing such handles as DWORD values. The 64-bit HANDLE_PTR is 64 bits on the wire (not truncated) and thus does not need mapping. (The 32-bit HANDLE_PTR is 32 bits on the wire.)
 
@@ -170,9 +170,15 @@ However, if we take a 64-bit handle and try to pass it to a 32-bit process, we c
 0x620820F0A40464C8 != 0xA40464C8 
 ```
 
-So because our shell is running in 32-bit address space while trying to impersonate a process in 64-bit address space, the top half of the handle is lost when the check is performed and we attempt to verify a non-existant process handle. WoW64 may be able to successfully emulate interactions between 32-bit processes and 64-bit kernels, but it cannot convert a 64-bit thread into a 32-bit thread or map a 64-bit address to 32-bit address space.
+### So What's Happening?
 
-Remember to match your payloads and architectures!!! I've learned my lesson.
+There are two options for why this is failing. One explanation is that because our shell is running in 32-bit address space while trying to impersonate a process in 64-bit address space, the top half of the 64-bit handle is lost when the check is performed and we attempt to verify a non-existant process handle (example above). The other is that trying to retrieve a 64-bit handle while in a 32-bit process returns an error. 
+
+The answer seems to be both. In the case of the original PoC script from Google Zero, the access check for the process handle is performed without knowing what size the handle is, or what the architecture of the system is specifically. This is because it is written in C++ and needs to be compiled for the target architecture.
+
+In the case of the powershell privilege escalation script, we never receive an actual handle because the call to ```DuplicateHandle``` call fails due to a lack of getting a valid process handle in the 32-bit address space from the 64-bit host.
+
+Remember to match your payloads and architectures! WoW64 may be able to successfully emulate interactions between 32-bit processes and 64-bit kernels, but it cannot convert a 64-bit thread into a 32-bit thread or map a 64-bit address to 32-bit address space.
 
 This was a great learning experience, but I'm sure that I've still managed to get some of this wrong. If anyone has comments I would be more than happy to hear them. You can get in contact through the information on my [contact page](https://spencerdodd.github.io/spencerdodd.github.io/contact/). Until next time...
 
