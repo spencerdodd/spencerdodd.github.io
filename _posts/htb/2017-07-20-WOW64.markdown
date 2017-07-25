@@ -1,0 +1,199 @@
+---
+layout: post
+title:  "WoW64; So That's Why My Exploit Failed"
+subtitle: "Hack the Box"
+date:   2017-07-20 12:00:00 -0500
+author: "coastal"
+header-img: "images/htb/wow64/header.png"
+---
+
+During an exploitation attempt on one of the hackthebox servers, I ran into something I didn't know about Windows that hung me up for a while. I had the correct exploit, had a shell, but couldn't get my privilege escalation script to succeed. Everyone I talked to said that they had used the same exploit and had gotten the sweet sight of ```NT AUTHORITY\SYSTEM``` on their command line. So why wasn't it working for me?
+
+My initial foothold in the server was a remote shell operating under the user ```[redacted]```. My privilege escalation exploit involved manipulating a leaked thread handle in the ```CreateProcessWithTokenW``` and ```CreateProcessWithLogonW``` Windows APIs to 'impersonate' a system token (from Windows' Secondary Logon service), and assign it to a newly spawned process with the impersonated ```SYSTEM``` level authority. The [original writeup](https://googleprojectzero.blogspot.co.uk/2016/03/exploiting-leaked-thread-handle.html) is from James Forshaw of Google's Project Zero, and the [exploit script](https://github.com/FuzzySecurity/PowerShell-Suite/blob/master/Invoke-MS16-032.ps1) was @FuzzySec/b33f's MS16-032 powershell script. 
+
+Initially, I didn't realize that my foothold shell was 32-bit (because whoops). Once I realized the architecture mismatch with the target's 64-bit system, I switched my shell payload to 64-bit and tried again. Boom, I got ```SYSTEM```. After I figured out my dumb mistake, I realized that I didn't really know why it was such a dumb mistake. I figured it had to do with the architecture mismatch between my shell and the system, but being a Windows noob, I had to start doing some digging to determine exactly what was going on.
+
+### Virtual Playground
+
+The first thing to do was to make sure I could recreate the issue on a system I had total control of. So I spun up my Windows 7 VM and started messing about. First thing to do was to get a 32-bit and 64-bit version of powershell running to verify that I could recreate the issue.
+
+#### 32-bit powershell spawn (x86)
+
+```
+%SystemRoot%\syswow64\WindowsPowerShell\v1.0\powershell.exe -exec bypass
+```
+
+#### 64-bit powershell spawn (x64) 
+
+```
+powershell -exec bypass
+```
+
+So, when I try to execute the exploit in the 32-bit shell I get the same error as when I executed it on the server.
+
+<img src="{{ site.baseurl }}/images/htb/wow64/32bit-win7.png">
+
+And when I execute it on the 64-bit shell, we get ```SYSTEM```.
+
+<img src="{{ site.baseurl }}/images/htb/wow64/64bit-win7.png">
+
+
+### Source Code
+
+Well let's take a look at the source and see where things are going wrong.
+
+#### MS16-032.ps1 (Invoke-MS16-032)
+
+```
+echo "[>] Duplicating CreateProcessWithLogonW handle"
+$hThread = Get-ThreadHandle
+
+# If no thread handle is captured, the box is patched
+if ($hThread -eq 0) {
+	echo "[!] No valid thread handle was captured, exiting!`n"
+	Return
+}
+```
+
+Tracking down that error message, we see that it's popped when we're trying to get the thread handle of the process we are going to impersonate. ```Get-ThreadHandle``` returns ```0```.
+
+```
+function Get-ThreadHandle {
+	
+	[...snip...]
+	
+	# Duplicate handle into current process -> DUPLICATE_SAME_ACCESS
+	$lpTargetHandle = [IntPtr]::Zero
+	$CallResult = [Kernel32]::DuplicateHandle(
+		$ProcessInfo.hProcess, 0x4,
+		[Kernel32]::GetCurrentProcess(),
+		[ref]$lpTargetHandle, 0, $false,
+		0x00000002)
+
+	[...snip...]
+	
+	$lpTargetHandle
+
+}
+```
+
+In the relevant snippet, ```$lpTargetHandle``` is initialized as an ```IntPtr``` with a value of ```0```. With our failure, and the relevant check in ```Invoke-MS16-032```:
+
+```
+if ($hThread -eq 0) {
+	[error]
+}
+```
+
+it's obvious that the call to ```DuplicateHandle``` in ```kernel32.dll``` is not successful. The [description](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724251(v=vs.85).aspx) for the function is found in Microsoft's Windows Documentation.
+
+	DuplicateHandle can be used to duplicate a handle between a 32-bit process and a 64-bit process. The resulting handle is appropriately sized to work in the target process. For more information, see Process Interoperability.
+
+```DuplicateHandle``` is a part of the [Windows 32-bit on Windows 64-bit (WoW64)](https://msdn.microsoft.com/en-us/library/windows/desktop/aa384249(v=vs.85).aspx) subsystem that allows 32-bit processes to run on 64-bit versions of Windows. The way it functions is by creating an API that emulates interaction between the 32-bit version of ```Ntdll.dll``` and the kernel of the processor by intercepting kernel calls. This emulation framework is where our error is manifesting.
+
+In the [description](https://msdn.microsoft.com/en-us/library/windows/desktop/aa384231(v=vs.85).aspx) for ```Process Interoperability```, we see that that passing handles across WoW64 includes some subtlety.
+
+	To port handles, which by their nature are local to the computer and would never be used across the 32-bit to 64-bit boundary, use the HANDLE_PTR type instead of the INT_PTR or DWORD_PTR type. This includes porting RPC interfaces passing such handles as DWORD values. The 64-bit HANDLE_PTR is 64 bits on the wire (not truncated) and thus does not need mapping. (The 32-bit HANDLE_PTR is 32 bits on the wire.)
+
+Looking back at the [writeup](https://googleprojectzero.blogspot.co.uk/2016/03/exploiting-leaked-thread-handle.html) by James Forshaw for Project Zero, we see that the exploit is known to fail when used cross-architecturally (such as with WoW64).
+
+	You need to ensure that it is built for the correct bitness of the platform, otherwise the RPC call will truncate the handle values. This is because handle values are pointers, which are unsigned, so when the RPC routines convert the 32 bit handles to 64 bit they are zero extended. As (DWORD)-2 does not equal (DWORD64)-2 it will fail with an invalid handle error.
+
+Looking at the code that performs the access check for the duplicated (impersonated) process, we can see that the check is done with bit-level manipulation of the handle.
+
+```
+ NTSTATUS ObpReferenceProcessObjectByHandle(HANDLE       SourceHandle,
+                                           EPROCESS*    SourceProcess, 
+                                           ..., 
+                                           PVOID*       Object, 
+                                           ACCESS_MASK* GrantedAccess) {
+  if ((INT_PTR)SourceHandle < 0) {
+    if (SourceHandle == (HANDLE)-1 ) {
+      *GrantedAccess = PROCESS_ALL_ACCESS;
+      *Object = SourceProcess;
+      return STATUS_SUCCESS;
+    } else if (SourceHandle == (HANDLE)-2) {
+      *GrantedAccess = THREAD_ALL_ACCESS;
+      *Object = KeGetCurrentThread();
+      return STATUS_SUCCESS;
+    }
+    return STATUS_INVALID_HANDLE;
+    
+    // Get from process handle table.
+}
+```
+
+So the code checks for the value of the last 2 bits of the handle, which are reserved for the accession values of the handle process. The [issue](https://blogs.msdn.microsoft.com/larryosterman/2005/01/31/transfering-a-pointer-across-processes/) is that the 32-bit and 64-bit version of the handle need to be the same for the evaluation to be true. For a 32-bit WoW64 handle that is used in a 64-bit process, 0-extension ensures that the addresses are the same.
+
+#### 0xA40464CA in 32-bit
+
+```
+ 10100100000001000110010011001010
+-00000000000000000000000000000010 (Access Check)
+---------------------------------
+ 10100100000001000110010011001000
+```
+
+#### 0xA40464CA in 64-bit (0-extended)
+
+```
+ 0000000000000000000000000000000010100100000001000110010011001010
+-0000000000000000000000000000000000000000000000000000000000000010 (Access Check)
+-----------------------------------------------------------------
+ 0000000000000000000000000000000010100100000001000110010011001000
+-----------------------------------------------------------------
+```
+
+```
+0xA40464C8 == 0xA40464C8 (ObpReferenceProcessObjectByHandle pass = thread level access)
+```
+
+However, if we take a 64-bit handle and try to pass it to a 32-bit process, we can see that we cannot just lose the top 32 most-significant bits and retain the correct process handle.
+
+#### 0x620820F0A40464CA in 64-bit
+
+```
+ 0110001000001000001000001111000010100100000001000110010011001010
+-0000000000000000000000000000000000000000000000000000000000000010 (Access Check)
+-----------------------------------------------------------------
+ 0110001000001000001000001111000010100100000001000110010011001000
+```
+
+#### 0x620820F0A40464CA in 64-bit -> 32-bit truncated
+
+```
+ 10100100000001000110010011001010 (can't get handle to check; address doesn't exist)
+
+```
+
+```
+0x620820F0A40464C8 != 0xA40464C8 
+```
+
+While WoW64 may be able to successfully emulate interactions between 32-bit processes and 64-bit kernels, it cannot convert a 64-bit thread into a 32-bit thread or map a 64-bit address to 32-bit address space. 
+
+Remember to match your payloads and architectures!!! I've learned my lesson.
+
+This was a great learning experience, but I'm sure that I've still managed to get some of this wrong. If anyone has comments I would be more than happy to hear them. You can get in contact through the information on my [contact page](https://spencerdodd.github.io/spencerdodd.github.io/contact/). Until next time...
+
+-coastal
+
+<img src="{{ site.baseurl }}/images/htb/wow64/iamroot.png">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
