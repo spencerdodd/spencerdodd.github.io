@@ -72,17 +72,21 @@ sleep(3)
 print_status("Done.  Verify privileges manually or use 'getuid' if using meterpreter to verify exploitation.")
 ```
 
-As we can see, the lenient access rights on the process is what allows us to inject the exploit ```.dll```, payload, and run with ```SYSTEM``` privileges. 
+As we can see, the lenient access rights on the process is what allows us to inject the exploit ```.dll``` and payload without complications, and execute the payload with ```SYSTEM``` privileges. 
 
-Interestingly enough, it doesn't look like the exploit migrates the meterpreter session to the newly escalated ```notepad.exe``` process. While we could set our payload to a reverse shell and catch our new ```SYSTEM``` privileges, we could also perform the exploit without any payload and migrate meterpreter into the elevated ```PROCESS_ALL_ACCESS``` process. I decided to perform the priv esc that way, and got my ```SYSTEM``` the same as the cheap way. But this time I earned it.
+Interestingly enough, it doesn't look like the exploit migrates the meterpreter session to the newly escalated ```notepad.exe``` process. Looking at the output of ```ps```, the ```notepad.exe``` process is not killed after exploitation. While we could set our payload to a reverse shell and catch our new ```SYSTEM``` privileges, we could also perform the exploit without any payload and migrate meterpreter into the elevated ```PROCESS_ALL_ACCESS``` process like we did earlier albeit accidentally. I decided to perform the priv esc that way and got myself a ```SYSTEM``` shell, but this time I earned it.
 
 -coastal
 
+---
+
 ### Resources
 
-https://msdn.microsoft.com/en-us/library/windows/desktop/ms684880(v=vs.85).aspx
-https://docs.microsoft.com/en-us/iis/manage/configuring-security/application-pool-identities
-https://stackoverflow.com/questions/7822898/what-is-w3wp-exe
+[Process Security and Access Rights](https://msdn.microsoft.com/en-us/library/windows/desktop/ms684880(v=vs.85).aspx)
+
+[w3wp.exe](https://docs.microsoft.com/en-us/iis/manage/configuring-security/application-pool-identities)
+
+[w3wp.exe](https://stackoverflow.com/questions/7822898/what-is-w3wp-exe)
 
 
 
