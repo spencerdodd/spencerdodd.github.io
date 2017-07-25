@@ -170,7 +170,7 @@ However, if we take a 64-bit handle and try to pass it to a 32-bit process, we c
 0x620820F0A40464C8 != 0xA40464C8 
 ```
 
-While WoW64 may be able to successfully emulate interactions between 32-bit processes and 64-bit kernels, it cannot convert a 64-bit thread into a 32-bit thread or map a 64-bit address to 32-bit address space. 
+So because our shell is running in 32-bit address space, while trying to impersonate a process in 64-bit address space the top half of the handle is lost when the check is performed and we attempt to verify a non-existant process handle. WoW64 may be able to successfully emulate interactions between 32-bit processes and 64-bit kernels, but it cannot convert a 64-bit thread into a 32-bit thread or map a 64-bit address to 32-bit address space.
 
 Remember to match your payloads and architectures!!! I've learned my lesson.
 
