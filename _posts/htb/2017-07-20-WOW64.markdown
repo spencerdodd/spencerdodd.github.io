@@ -85,7 +85,7 @@ if ($hThread -eq 0) {
 }
 ```
 
-it's obvious that the call to ```DuplicateHandle``` in ```kernel32.dll``` is not successful. The [description](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724251(v=vs.85).aspx) for the function is found in Microsoft's Windows Documentation.
+it's obvious that the call to ```DuplicateHandle``` in ```kernel32.dll``` is not successful as the value of ```$hThread``` is still ```0``` and not our handle. The [description](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724251(v=vs.85).aspx) for the function is found in Microsoft's Windows Documentation.
 
 	DuplicateHandle can be used to duplicate a handle between a 32-bit process and a 64-bit process. The resulting handle is appropriately sized to work in the target process. For more information, see Process Interoperability.
 
