@@ -237,6 +237,31 @@ Password OK :)
 
 Bingo!
 
+If we did want to figure out the computation, it's pretty straightforward as well
+
+```
+|           0x0804842b      c745f85a0000.  movl $0x5a, local_8h        ; 'Z' ; 90
+|           0x08048432      c745f4ec0100.  movl $0x1ec, local_ch       ; 492
+|           0x08048439      8b55f4         movl local_ch, %edx
+|           0x0804843c      8d45f8         leal local_8h, %eax
+|           0x0804843f      0110           addl %edx, (%eax)
+|           0x08048441      8b45f8         movl local_8h, %eax
+|           0x08048444      0faf45f8       imull local_8h, %eax
+```
+
+First we add 90 to 492 at `0x0804843f`, then we multiply that result by itself. The function's pseudocode is something like:
+
+```
+def iscorrect(input_val):
+	a = 90
+	b = 492
+	if input_val == (90 + 492) ** 2:
+		print("win")
+	else:
+		print("fail")
+```
+
+I'll be continuing this series on this post in the future so keep an eye out
 
 
 
