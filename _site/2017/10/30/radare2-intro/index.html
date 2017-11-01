@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="blog about my coding and security work">
+
+    <title>Intro to radare2 - byte-sized</title>
+
+    <link rel="canonical" href="http://localhost:4000/spencerdodd.github.io/2017/10/30/radare2-intro/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/spencerdodd.github.io/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/spencerdodd.github.io/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/spencerdodd.github.io/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/spencerdodd.github.io/feed.xml" title="byte-sized" />
+
+</head>
+
+
+<link rel="icon"  type="image/png"    href="/spencerdodd.github.io/images/site-resources/icon.png">
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/spencerdodd.github.io/">byte-sized</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/spencerdodd.github.io/">Home</a>
+                </li>
+                
+				
+                <li>
+                    <a href="/spencerdodd.github.io/about/">About</a>
+                </li>
+				
+                
+				
+                <li>
+                    <a href="/spencerdodd.github.io/contact/">Contact</a>
+                </li>
+				
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/spencerdodd.github.io/images/site-resources/radare2-intro-header.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Intro to radare2</h1>
+                    
+                    <h2 class="subheading">Tools</h2>
+                    
+                    <span class="meta">Posted by coastal on October 30, 2017</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<p>I’m working on a challenge binary that requires some reverse engineering and suggested working through it with <code class="highlighter-rouge">radare2</code>. The <code class="highlighter-rouge">radare2</code> framework (<code class="highlighter-rouge">r2</code> for short) is an oft-talked about open-source reverse engineering framework that has a reputation for being less than welcoming to new users…</p>
+
+<p><img src="/spencerdodd.github.io/images/notes-tips-tricks/r2-learning-curve.png" /></p>
+
+<p>However, I’m up to the challenge, and got to cracking. I decided to work with the IOLI-crackme challenge, mainly because I found this great <a href="https://dustri.org/b/defeating-ioli-with-radare2.html">tutorial</a> that uses both <code class="highlighter-rouge">r2</code> and these binaries, which will help if I hit a real roadblock.</p>
+
+<h3 id="setup">setup</h3>
+
+<p>Installing <code class="highlighter-rouge">r2</code> couldn’t be more straightforward</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/radare/radare2
+cd radare2/sys
+./install.sh
+</code></pre></div></div>
+
+<p>I tried installing via <code class="highlighter-rouge">homebrew</code>, but was getting some weird errors that tracked back to a dependency. After uninstalling and installing in the recommended fashion, all those issues disappeared.</p>
+
+<h3 id="0x00">0x00</h3>
+
+<p>First thing to do is download the binaries and load the first challenge up for inspection:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://pof.eslack.org/tmp/IOLI-crackme.tar.gz
+tar -xzvf
+cd IOLI-crackme/bin-linux
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>coastal@ubuntu32server:~/intro-to-r2/IOLI-crackme/bin-linux$ radare2 crackme0x00
+ -- Select your architecture with: 'e asm.arch=&lt;arch&gt;' or r2 -a from the shell
+[0x08048360]&gt; aaa
+[x] Analyze all flags starting with sym. and entry0 (aa)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Analyze function calls (aac)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">aaa</code> command is the newer version of the <code class="highlighter-rouge">aa</code> command which translates to english as ‘analyze all’. This command abbreviation is a theme that we see throughout <code class="highlighter-rouge">r2</code>. As we can see in the output, it is doing a number of analyses on the binary and saving the analyzed information for future use. One of the first things to do when reverse engineering any binary is to check out the strings to get an idea of what the function might be doing. We can do this with the <code class="highlighter-rouge">iz</code> command.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0x08048360]&gt; iz
+vaddr=0x08048568 paddr=0x00000568 ordinal=000 sz=25 len=24 section=.rodata type=ascii string=IOLI Crackme Level 0x00\n
+vaddr=0x08048581 paddr=0x00000581 ordinal=001 sz=11 len=10 section=.rodata type=ascii string=Password: 
+vaddr=0x0804858f paddr=0x0000058f ordinal=002 sz=7 len=6 section=.rodata type=ascii string=250382
+vaddr=0x08048596 paddr=0x00000596 ordinal=003 sz=19 len=18 section=.rodata type=ascii string=Invalid Password!\n
+vaddr=0x080485a9 paddr=0x000005a9 ordinal=004 sz=16 len=15 section=.rodata type=ascii string=Password OK :)\n
+</code></pre></div></div>
+
+<p>In our challenge file, it appears to take in a password and compare it to an expected password. Let’s run the file and see if that is the case</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>coastal@ubuntu32server:~/intro-to-r2/IOLI-crackme/bin-linux$ ./crackme0x00
+IOLI Crackme Level 0x00
+Password: password
+Invalid Password!
+</code></pre></div></div>
+
+<p>That does in fact seem to be what is going on. Now given that this is the first challenge (and likely fairly easy), we notice that one of the strings that <code class="highlighter-rouge">r2</code> found looks suspiciously like a password: <code class="highlighter-rouge">250382</code>. What happens if we enter that?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>coastal@ubuntu32server:~/intro-to-r2/IOLI-crackme/bin-linux$ ./crackme0x00
+IOLI Crackme Level 0x00
+Password: 250382
+Password OK :)
+</code></pre></div></div>
+
+<p>Pretty easy :)</p>
+
+<p>However, if we hadn’t noticed that nice little obvious answer, we could dive into the disassembly. First thing to do would be to check out the main function, which we can do with <code class="highlighter-rouge">pdf@sym.main</code>, or <code class="highlighter-rouge">print</code> <code class="highlighter-rouge">disassembled</code> <code class="highlighter-rouge">function</code> @ <code class="highlighter-rouge">offset</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0x0804a8a0]&gt; pdf@sym.main
+            ;-- main:
+/ (fcn) main 127
+|   main ();
+|           ; var int local_18h @ ebp-0x18
+|           ; var int local_4h @ esp+0x4
+|              ; DATA XREF from 0x08048377 (entry0)
+|           0x08048414      55             push ebp
+|           0x08048415      89e5           mov ebp, esp
+|           0x08048417      83ec28         sub esp, 0x28               ; '('
+|           0x0804841a      83e4f0         and esp, 0xfffffff0
+|           0x0804841d      b800000000     mov eax, 0
+|           0x08048422      83c00f         add eax, 0xf
+|           0x08048425      83c00f         add eax, 0xf
+|           0x08048428      c1e804         shr eax, 4
+|           0x0804842b      c1e004         shl eax, 4
+|           0x0804842e      29c4           sub esp, eax
+|           0x08048430      c70424688504.  mov dword [esp], str.IOLI_Crackme_Level_0x00_n ; [0x8048568:4]=0x494c4f49 ; "IOLI Crackme Level 0x00\n"
+|           0x08048437      e804ffffff     call sym.imp.printf         ; int printf(const char *format)
+|           0x0804843c      c70424818504.  mov dword [esp], str.Password: ; [0x8048581:4]=0x73736150 ; "Password: "
+|           0x08048443      e8f8feffff     call sym.imp.printf         ; int printf(const char *format)
+|           0x08048448      8d45e8         lea eax, [local_18h]
+|           0x0804844b      89442404       mov dword [local_4h], eax
+|           0x0804844f      c704248c8504.  mov dword [esp], 0x804858c  ; [0x804858c:4]=0x32007325
+|           0x08048456      e8d5feffff     call sym.imp.scanf          ; int scanf(const char *format)
+|           0x0804845b      8d45e8         lea eax, [local_18h]
+|           0x0804845e      c74424048f85.  mov dword [local_4h], str.250382 ; [0x804858f:4]=0x33303532 ; "250382"
+|           0x08048466      890424         mov dword [esp], eax
+|           0x08048469      e8e2feffff     call sym.imp.strcmp         ; int strcmp(const char *s1, const char *s2)
+|           0x0804846e      85c0           test eax, eax
+|       ,=&lt; 0x08048470      740e           je 0x8048480
+|       |   0x08048472      c70424968504.  mov dword [esp], str.Invalid_Password__n ; [0x8048596:4]=0x61766e49 ; "Invalid Password!\n"
+|       |   0x08048479      e8c2feffff     call sym.imp.printf         ; int printf(const char *format)
+|      ,==&lt; 0x0804847e      eb0c           jmp 0x804848c
+|      ||      ; JMP XREF from 0x08048470 (main)
+|      |`-&gt; 0x08048480      c70424a98504.  mov dword [esp], str.Password_OK_:__n ; [0x80485a9:4]=0x73736150 ; "Password OK :)\n"
+|      |    0x08048487      e8b4feffff     call sym.imp.printf         ; int printf(const char *format)
+|      |       ; JMP XREF from 0x0804847e (main)
+|      `--&gt; 0x0804848c      b800000000     mov eax, 0
+|           0x08048491      c9             leave
+\           0x08048492      c3             ret
+
+</code></pre></div></div>
+
+<p>Looking at <code class="highlighter-rouge">0x08048469</code> we see a <code class="highlighter-rouge">strcmp</code> call and a jump to <code class="highlighter-rouge">printf</code> of ‘Password OK :)\n’ if the compared strings are indeed equal. If we look at the values that were compared, one of them is our previous string of interest:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0x0804845e      c74424048f85.  mov dword [local_4h], str.250382 ; [0x804858f:4]=0x33303532 ; "250382"
+</code></pre></div></div>
+
+<p>The other is our input from <code class="highlighter-rouge">scanf</code>. It becomes clear that our input needs to be <code class="highlighter-rouge">250382</code>. And of course…</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>coastal@ubuntu32server:~/intro-to-r2/IOLI-crackme/bin-linux$ ./crackme0x00
+IOLI Crackme Level 0x00
+Password: 250382
+Password OK :)
+</code></pre></div></div>
+
+<p>I will likely add to this post as I progress instead of making more posts just to keep everything in one place. <code class="highlighter-rouge">0x01</code> up next.</p>
+
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/spencerdodd.github.io/2017/10/29/kernelpop/" data-toggle="tooltip" data-placement="top" title="kernelpop">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="/spencerdodd.github.io/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/spencerdodd">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; spencerdodd 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/spencerdodd.github.io/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/spencerdodd.github.io/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/spencerdodd.github.io/js/clean-blog.min.js "></script>
+
+
+    
+
+
+</body>
+
+</html>
