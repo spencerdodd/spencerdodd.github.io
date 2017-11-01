@@ -140,15 +140,102 @@ Password: 250382
 Password OK :)
 ```
 
-I will likely add to this post as I progress instead of making more posts just to keep everything in one place. `0x01` up next.
+### 0x01
 
+First step again is to check the strings
 
+```
+[0x08048330]> iz
+vaddr=0x08048528 paddr=0x00000528 ordinal=000 sz=25 len=24 section=.rodata type=ascii string=IOLI Crackme Level 0x01\n
+vaddr=0x08048541 paddr=0x00000541 ordinal=001 sz=11 len=10 section=.rodata type=ascii string=Password: 
+vaddr=0x0804854f paddr=0x0000054f ordinal=002 sz=19 len=18 section=.rodata type=ascii string=Invalid Password!\n
+vaddr=0x08048562 paddr=0x00000562 ordinal=003 sz=16 len=15 section=.rodata type=ascii string=Password OK :)\n
+```
 
+No easy string password this time. However, when we check out the disassembly of `main`, we see that the comparison branch for success is a fairly obvious one
 
+```
+0x0804842b      817dfc9a1400.  cmp dword [local_4h], 0x149a ; [0x149a:4]=-1
+```
 
+Convert that hex value to decimal
 
+```
+0x149a = 5274
+```
 
+And...
 
+```
+coastal@ubuntu32server:~/intro-to-r2/IOLI-crackme/bin-linux$ ./crackme0x01
+IOLI Crackme Level 0x01
+Password: 5274
+Password OK :)
+```
+
+Nice
+
+### 0x02
+
+Unfortunately this one doesn't store our password comparison value straight in the disassembly. Let's look at the relevant disassembly and see if we can track down the comparison and values,
+
+```
+|           0x0804842b      c745f85a0000.  movl $0x5a, local_8h        ; 'Z' ; 90
+|           0x08048432      c745f4ec0100.  movl $0x1ec, local_ch       ; 492
+|           0x08048439      8b55f4         movl local_ch, %edx
+|           0x0804843c      8d45f8         leal local_8h, %eax
+|           0x0804843f      0110           addl %edx, (%eax)
+|           0x08048441      8b45f8         movl local_8h, %eax
+|           0x08048444      0faf45f8       imull local_8h, %eax
+|           0x08048448 b    8945f4         movl %eax, local_ch
+|           0x0804844b      8b45fc         movl local_4h, %eax
+|           0x0804844e b    3b45f4         cmpl local_ch, %eax
+|       ,=< 0x08048451      750e           jne 0x8048461
+|       |   0x08048453      c704246f8504.  movl $str.Password_OK_:__n, (%esp) ; [0x804856f:4]=0x73736150 ; "Password OK :)\n"
+|       |   0x0804845a      e8bdfeffff     calll sym.imp.printf        ; int printf(const char *format)
+|      ,==< 0x0804845f      eb0c           jmp 0x804846d
+|      |`-> 0x08048461      c704247f8504.  movl $str.Invalid_Password__n, (%esp) ; [0x804857f:4]=0x61766e49 ; "Invalid Password!\n"
+|      |    0x08048468      e8affeffff     calll sym.imp.printf        ; int printf(const char *format)
+
+```
+
+I changed syntax to AT&T because that's what I'm used to with the command `e asm.syntax = att`, but you can use whatever syntax you're most comfortable with. Additionally, this dissambly snippet has some `b` characters after the addresses. This is because I opened the file in debug mode `r2 -d {binary}`. Breakpoints are set with the command `db {address}` and removed with `db -{address}`. 
+
+If we look at the dissassembly, we see that at `0x0804844e` we do a comparison whose return value branches on failure to our fail condition. Looking back up the instructions, we see that `local_8h` and `local_ch` both are assigned values that are not from `scanf`. Tracing these values down it becomes apparent that our input is stored in `local_4h` and the password is stored in `local_ch`. `local_ch` is stashed out of `eax` into `local_ch` at `0x08048448`, so if we break on that address and inspect our registers, we should find the password value in `eax`.
+
+Sidenote, when you've run through a binary in debug mode, you can reset your execution context with the `do` command. `dc` for continuing after hitting a breakpoint or starting from `do`
+
+```
+[0xb7f2eb20]> dc
+IOLI Crackme Level 0x02
+Password: 1       
+hit breakpoint at: 8048448
+[0x08048448]> dr
+eax = 0x00052b24
+ebx = 0x00000000
+ecx = 0xbfd1fd44
+edx = 0x000001ec
+esi = 0x00000001
+edi = 0xb7f1c000
+esp = 0xbfd1fd40
+ebp = 0xbfd1fd68
+eip = 0x08048448
+eflags = 0x00000206
+oeax = 0xffffffff
+[0x08048448]> pf r (eax)
+  : eax : 0x00052b24
+```
+
+Converting that to decimal we get `338724`.
+
+```
+coastal@ubuntu32server:~/intro-to-r2/IOLI-crackme/bin-linux$ ./crackme0x02
+IOLI Crackme Level 0x02
+Password: 338724
+Password OK :)
+```
+
+Bingo!
 
 
 
