@@ -2,12 +2,12 @@
 layout: post
 title:  "Intro to radare2"
 subtitle: "Tools"
-date:   2017-10-30 00:00:00 -0500
+date:   2017-10-31 00:00:00 -0500
 author: "coastal"
 header-img: "images/site-resources/radare2-intro-header.png"
 ---
 
-I'm working on a challenge binary that requires some reverse engineering and suggested working through it with `radare2`. The `radare2` framework (`r2` for short) is an oft-talked about open-source reverse engineering framework that has a reputation for being less than welcoming to new users...
+I'm working on a challenge binary that requires some reverse engineering and it was suggested to work through it with `radare2`. The `radare2` framework (`r2` for short) is an oft-talked about open-source reverse engineering framework that has a reputation for being less than welcoming to new users...
 
 <img src="{{ site.baseurl }}/images/notes-tips-tricks/r2-learning-curve.png">
 
