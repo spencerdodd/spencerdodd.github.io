@@ -68,7 +68,14 @@ whoops
 
 ### exploitation
 
-There are two payloads built in to the exploit: a normal `php` reverse shell, and a `meterpreter` stager.
+While the incomplete filtering allows us to get code execution, we still have some issues with payloads, specifically ones that write to a temp file that is subsequently executed. In order to bypass that restriction, we can call the `printf` command with a payload that is octal encoded like so (example here is `whoami`):
+
+```
+$ printf '167\150\157\141\155\151'|sh
+coastal
+```
+
+I built octal encoding and recursive `base64` wrapping of payloads into the exploit. There are two payloads built in to the exploit: a normal `php` reverse shell, and a `meterpreter` stager. These payloads are executed by writing to a temp file in an initial request, and then executing the file with a subsequent **GET** request to the file. Since the pfSense firewall runs on `php`, we use a `php`-based reverse shell and m`meterpreter` stager to ensure payload execution compatibility with all deployments of the firewall.
 
 **php reverse shell**
 
@@ -78,7 +85,7 @@ There are two payloads built in to the exploit: a normal `php` reverse shell, an
 
 <img src="{{ site.baseurl }}/images/notes-tips-tricks/msf.gif">
 
-This exploit does require authentication, so you need to know a login to the firewall in order to perform the exploitation. The exploit is built-in with the default pfSense credentials baked in (`admin:pfsense`). If this login does not work, you will need to either determine the login credentials or integrate this exploit into a CSRF attack. CSRF protection is not built into the requests passed to `status_rrd_graph_img.php`. In the real world, that means that this arbitrary code execution could be performed by convincing an authenticated admin to click a payload link, perhaps through a phishing vector.
+This exploit does require authentication, so you need to know a login to the firewall in order to perform the exploitation. The exploit is written with the default pfSense credentials baked in (`admin:pfsense`). If this login does not work, you will need to either determine the login credentials or integrate this exploit into a CSRF attack. CSRF protection is not built into the requests passed to `status_rrd_graph_img.php`. In the real world, that means that this arbitrary code execution could be performed by convincing an authenticated admin to click a payload link, perhaps through a phishing vector.
 
 ### base64 headaches
 
