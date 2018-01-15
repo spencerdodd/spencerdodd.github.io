@@ -75,7 +75,7 @@ $ printf '167\150\157\141\155\151'|sh
 coastal
 ```
 
-I built octal encoding and recursive `base64` wrapping of payloads into the exploit. There are two payloads built in to the exploit: a normal `php` reverse shell, and a `meterpreter` stager. The exploitation chain functions by first sending an obfuscated payload that writes the `php` shell or stager to a temp file in an initial **POST** request. This is then executed with a subsequent **GET** request to the filepath, triggering the reverse shell. Since the pfSense firewall runs on `php`, we use a `php`-based reverse shell and `meterpreter` stager to ensure payload execution compatibility with all deployments of the firewall.
+I built octal encoding and recursive `base64` wrapping of payloads into the exploit. There are two payloads built in to the exploit: a normal `php` reverse shell, and a `meterpreter` stager. The exploitation chain functions by first sending an obfuscated payload that writes the `php` shell or stager to a temp file in an initial **GET** request. This is then executed with a subsequent **GET** request that calls the temp file with `php`. Since the pfSense firewall runs on `php`, we use a `php`-based reverse shell and `meterpreter` stager to ensure payload execution compatibility with all deployments of the firewall.
 
 **php reverse shell**
 
