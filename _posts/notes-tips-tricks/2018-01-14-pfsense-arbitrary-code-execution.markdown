@@ -4,7 +4,7 @@ title:  "pfSense Authenticated Arbitrary Code Execution Exploit"
 subtitle: "PoCs"
 date:   2017-01-14 00:00:00 -0500
 author: "coastal"
-header-img: "images/site-resources/kernelpop-exploit-header.png"
+header-img: "images/site-resources/pfsense-code-exec-header.jpg"
 ---
 
 ### introduction
