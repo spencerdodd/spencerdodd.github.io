@@ -75,7 +75,7 @@ $ printf '167\150\157\141\155\151'|sh
 coastal
 ```
 
-I built octal encoding and recursive `base64` wrapping of payloads into the exploit. There are two payloads built in to the exploit: a normal `php` reverse shell, and a `meterpreter` stager. These payloads are executed by writing to a temp file in an initial request, and then executing the file with a subsequent **GET** request to the file. Since the pfSense firewall runs on `php`, we use a `php`-based reverse shell and m`meterpreter` stager to ensure payload execution compatibility with all deployments of the firewall.
+I built octal encoding and recursive `base64` wrapping of payloads into the exploit. There are two payloads built in to the exploit: a normal `php` reverse shell, and a `meterpreter` stager. The exploitation chain functions by first sending an obfuscated payload that writes the `php` shell or stager to a temp file in an initial **POST** request. This is then executed with a subsequent **GET** request to the filepath, triggering the reverse shell. Since the pfSense firewall runs on `php`, we use a `php`-based reverse shell and `meterpreter` stager to ensure payload execution compatibility with all deployments of the firewall.
 
 **php reverse shell**
 
@@ -89,7 +89,9 @@ This exploit does require authentication, so you need to know a login to the fir
 
 ### base64 headaches
 
-I had an arduous journey trying to get the `base64` payload obfuscation working. While not an inherent necessity, it is always nice to add another layer of protection to payload delivery. Unfortunately, I ran into some subtlety in how `python` and `php` process `base64` encoding and decoding.
+I had an arduous journey trying to get the `base64` payload obfuscation working. While not an inherent necessity, it is always nice to add another layer of protection to payload delivery. Unfortunately, I ran into some subtlety with how `python` and `php` process `base64` encoding and decoding.
+
+**padding purgatory ahead**
 
 Let's generate a test string that, when encoded with `python`'s `base64` library, requires padding.
 
@@ -104,16 +106,16 @@ Let's generate a test string that, when encoded with `python`'s `base64` library
 We can see that encoding and decoding the string works as you would expect. However, when we take that padded `base64` encoded string and try to decode it with `php`'s `base64` library it doesn't go quite as smoothly.
 
 ```
-coastal@blackbox  /tmp  echo '<?php print(base64_decode(dGVzdCBtZXNzYWdlIGhlcmU=)) ?>' > test.php
-coastal@blackbox  /tmp  php test.php
+$ echo '<?php print(base64_decode(dGVzdCBtZXNzYWdlIGhlcmU=)) ?>' > test.php
+$ php test.php
 PHP Parse error:  syntax error, unexpected '=', expecting ',' or ')' in /tmp/test.php on line 1
 ```
 
 Interestingly, if we remove the padding from the `base64` encoded string that was generated in `python` and try to decode it with `php`'s library it decodes flawlessly.
 
 ```
-coastal@blackbox  /tmp  echo '<?php print(base64_decode(dGVzdCBtZXNzYWdlIGhlcmU)) ?>' > test.php 
-coastal@blackbox  /tmp  php test.php                                                            
+$ echo '<?php print(base64_decode(dGVzdCBtZXNzYWdlIGhlcmU)) ?>' > test.php 
+$ php test.php                                                            
 PHP Notice:  Use of undefined constant dGVzdCBtZXNzYWdlIGhlcmU - assumed 'dGVzdCBtZXNzYWdlIGhlcmU' in /tmp/test.php on line 1
 test message here
 ```
@@ -133,6 +135,6 @@ As to the platform-specific reasons underlying these idiosyncrasies, I am not en
 
 ### summary
 
-I hope this was an interesting post, and if you would like to check out / use my exploit PoC you can view it on my [github](https://github.com/spencerdodd/pfsense-code-exec). Thanks!
+I hope this was an interesting post, and if you would like to check out / use my exploit PoC it is up on my [github](https://github.com/spencerdodd/pfsense-code-exec). Thanks!
 
 -coastal
