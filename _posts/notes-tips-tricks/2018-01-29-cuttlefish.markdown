@@ -4,14 +4,14 @@ title:  "cuttlefish host enumeration"
 subtitle: "tools"
 date:   2018-01-29 00:00:00 -0500
 author: "coastal"
-header-img: "images/site-resources/pfsense-code-exec-header.jpg"
+header-img: "images/site-resources/cuttlefish-header.png"
 ---
 
-### why do i need another scanning tool?
+### Why Do I Need Another Scanning Tool?
 
 I am preparing to take Offensive Security's Penetration Testing with Kali (PWK) course followed by the OSCP, and saw that people in the past have written tools for performing automated scanning of network hosts (to apply to the labs/exam). Most all of the tools focus on performing initial `nmap` scans and suggesting followup service enumeration to perform based on the results. I decided to make a tool that performs these follow up scans concurrently, and outputs the results in a directory structure per-host.
 
-### what is cuttlefish
+### What is cuttlefish?
 
 <img src="{{ site.baseurl }}/images/notes-tips-tricks/cuttles.jpg">
 
@@ -39,7 +39,7 @@ All of the log files use the `.cuttlelog` extension because...why not...but they
 
 <img src="{{ site.baseurl }}/images/notes-tips-tricks/cuttlescan.gif">
 
-### wrapup
+### Wrapup
 
 It's a pretty straightforward tool, and fairly extensible (for me...the source might be a pain for someone else to expand on). I wrote it for personal use, but if people want to use it I can work on restructuring it for adding new scan modules and services. I should restructure it to be a bit more conforming to the `golang` recommended project format. But for now, it does everything I need.
 Cheers!
