@@ -41,8 +41,9 @@ All of the log files use the `.cuttlelog` extension because...why not...but they
 
 ### Wrapup
 
-It's a pretty straightforward tool, and fairly extensible (for me...the source might be a pain for someone else to expand on). I wrote it for personal use, but if people want to use it I can work on restructuring it for adding new scan modules and services. I should restructure it to be a bit more conforming to the `golang` recommended project format. But for now, it does everything I need.
-Cheers!
+It's a pretty straightforward tool, and fairly extensible (for me...the source might be a pain for someone else to expand on). I wrote it for personal use, but if people want to use it I can work on restructuring it for adding new scan modules and services. I should restructure it to be a bit more conforming to the `golang` recommended project structure. But for now, it does everything I need. You can find the tool on my [github](https://github.com/spencerdodd/cuttlefish). If you have any comments or suggestions, feel free to open up an issue and let me know what you think!
+
+cheers
 
 -coastal
 
