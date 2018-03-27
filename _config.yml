@@ -4,7 +4,7 @@ header-img: images/site-resources/home.jpg
 email: your-email@yourdomain.com
 copyright_name: spencerdodd
 description: "blog about my coding and security work"
-baseurl: "/spencerdodd.github.io"
+baseurl: "/"
 url: "https://spencerdodd.github.io"
 github_username:  spencerdodd
 
