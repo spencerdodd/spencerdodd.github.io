@@ -20,7 +20,7 @@
                 </li>
                 {% for page in site.pages %}
                 {% if page.title %}
-                {% unless page.url contains '/poc/'%}{% endunless %}
+                {% unless page.url contains '/pocs/'%}{% endunless %}
 		        {% if page.url != '/404.html' %}
                 <li>
                     <a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
