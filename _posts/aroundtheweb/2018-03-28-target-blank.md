@@ -73,7 +73,7 @@ window.opener.document.write("\x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x
 aka.
 
 ```
-<script>alert(1);</script>
+window.opener.document.write("<script>alert(1);</script>")
 ```
 
 However, this was denied as modifying the `document` object is considered a violation of the cross origin policy.
