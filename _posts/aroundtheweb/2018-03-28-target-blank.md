@@ -78,7 +78,7 @@ aka.
 
 However, this was denied due to violation of the cross origin policy
 
-<img src="{{ site.baseurl }}/images/aroundtheweb/targetblank/xss-denial.gif">
+<img src="{{ site.baseurl }}/images/aroundtheweb/targetblank/xss-denial.png">
 
 ### timeline
 
