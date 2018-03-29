@@ -50,7 +50,7 @@ or
 
 * `rel="noopener noreferrer"`
 
-The latter of which offers protection for Chrome, Safari, and Firefox users, the former of which only offers protection for Chrome and Safari users. This is what a vulnerable `href` looks like:
+The latter of which offers protection for Chrome, Safari, Opera, and Firefox users, the former of which only offers protection for Chrome, Opera, and Safari users. This is what a vulnerable `href` looks like:
 
 ```
 <a class="top-user_website" href="https://spencerdodd.github.io/pocs/targetblank/" target="_blank">https://spencerdodd.github.io/pocs/targetblank/</a>
