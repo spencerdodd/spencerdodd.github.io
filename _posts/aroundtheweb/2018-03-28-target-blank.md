@@ -101,4 +101,5 @@ I thought this was a cool vulnerability, and now that I know about it, I've been
 ### references
 
 1. [dev.to writeup on targetblank vulnerablities](https://dev.to/ben/the-targetblank-vulnerability-by-example)
+
 2. [darto.com](https://darto.com)
