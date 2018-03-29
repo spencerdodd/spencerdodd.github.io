@@ -103,3 +103,5 @@ I thought this was a cool vulnerability, and now that I know about it, I've been
 1. [dev.to writeup on targetblank vulnerablities](https://dev.to/ben/the-targetblank-vulnerability-by-example)
 
 2. [darto.com](https://darto.com)
+
+3. [why not to use "target=\_blank"](https://css-tricks.com/use-target_blank/)
