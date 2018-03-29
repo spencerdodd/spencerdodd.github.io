@@ -1,3 +1,3 @@
-# Personal blog about coding / security
+# personal blog about coding and security
 
-read the blog for more details
+https://spencerdodd.github.io
