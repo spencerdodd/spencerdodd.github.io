@@ -76,7 +76,7 @@ aka.
 <script>alert(1);</script>
 ```
 
-However, this was denied due to violation of the cross origin policy
+However, this was denied as modifying the `document` object is considered a violation of the cross origin policy.
 
 <img src="{{ site.baseurl }}/images/aroundtheweb/targetblank/xss-denial.png">
 
