@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,16 +10,16 @@
 
     <title>kernelpop - byte-sized</title>
 
-    <link rel="canonical" href="http://localhost:4000/spencerdodd.github.io/2017/10/29/kernelpop/">
+    <link rel="canonical" href="http://localhost:4000//2017/10/29/kernelpop/">
 
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/spencerdodd.github.io/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/spencerdodd.github.io/css/clean-blog.css">
+    <link rel="stylesheet" href="//css/clean-blog.css">
 
     <!-- Pygments Github CSS -->
-    <link rel="stylesheet" href="/spencerdodd.github.io/css/syntax.css">
+    <link rel="stylesheet" href="//css/syntax.css">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -32,12 +33,12 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/spencerdodd.github.io/feed.xml" title="byte-sized" />
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000//feed.xml" title="byte-sized" />
 
 </head>
 
 
-<link rel="icon"  type="image/png"    href="/spencerdodd.github.io/images/site-resources/icon.png">
+<link rel="icon"  type="image/png"    href="//images/site-resources/icon.png">
 
 <body>
 
@@ -52,27 +53,75 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/spencerdodd.github.io/">byte-sized</a>
+            <a class="navbar-brand" href="//">byte-sized</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="/spencerdodd.github.io/">Home</a>
+                    <a href="//">Home</a>
                 </li>
                 
-				
-                <li>
-                    <a href="/spencerdodd.github.io/about/">About</a>
-                </li>
-				
+                    
+        		        
+                            
+                            <li>
+                                <a href="//about/">about</a>
+                            </li>
+                            
+    				    
+                    
                 
-				
-                <li>
-                    <a href="/spencerdodd.github.io/contact/">Contact</a>
-                </li>
-				
+                    
+        		        
+                            
+                            <li>
+                                <a href="//contact/">contact</a>
+                            </li>
+                            
+    				    
+                    
+                
+                    
+                
+                    
+        		        
+                            
+                                <!-- do nothing -->
+                            
+    				    
+                    
+                
+                    
+        		        
+                            
+                                <!-- do nothing -->
+                            
+    				    
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
                 
             </ul>
         </div>
@@ -83,7 +132,7 @@
 
 
     <!-- Post Header -->
-<header class="intro-header" style="background-image: url('/spencerdodd.github.io/images/site-resources/kernelpop-header.png')">
+<header class="intro-header" style="background-image: url('//images/site-resources/kernelpop-header.png')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -111,20 +160,21 @@
 
 <p>Take for example the sudo exploit from earlier this year <code class="highlighter-rouge">CVE-2017-1000367</code>. While it can be matched to a range of kernel versions from when the vulnerability was introduced to when it was patched, it has additional vulnerability requirements:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-sudo version &lt; 1.8.21
+<div class="highlighter-rouge"><pre class="highlight"><code>-sudo version &lt; 1.8.21
 -selinux-enabled
 -sudo built with selinux support
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>Simple kernel version matching cannot determine if a system meets these requirements. But, <code class="highlighter-rouge">kernelpop</code> can with its <code class="highlighter-rouge">brute-enumerate</code> mode (<code class="highlighter-rouge">-b</code> flag):</p>
 
-<p><img src="/spencerdodd.github.io/images/notes-tips-tricks/kernelpop-sudo.png" /></p>
+<p><img src="//images/notes-tips-tricks/kernelpop-sudo.png" /></p>
 
 <p>As you can see, <code class="highlighter-rouge">kernelpop</code> in the <code class="highlighter-rouge">brute-enumerate</code> mode runs through each of the prerequisite checks and determines if the underlying system satisfies the exploit’s requirements. If it does, it returns information that the system is confirmed vulnerable to the given kernel exploit. If not, like in this case, it also alerts so that you don’t waste time trying exploits that will fail (and might not tell you when you run the exploit source code).</p>
 
 <p>In addition to the in-depth <code class="highlighter-rouge">brute-enumerate</code> mode, the default mode for <code class="highlighter-rouge">kernelpop</code> simply performs the kernel version number matching to the built-in exploits. There is also an <code class="highlighter-rouge">input</code> mode, where you can input the output of a <code class="highlighter-rouge">uname -a</code> command and <code class="highlighter-rouge">kernelpop</code> will try to find exploits for the inputted kernel.</p>
 
-<p><img src="/spencerdodd.github.io/images/notes-tips-tricks/kernelpop-input.png" /></p>
+<p><img src="//images/notes-tips-tricks/kernelpop-input.png" /></p>
 
 <p>This makes <code class="highlighter-rouge">kernelpop</code> a great tool for an attacker who doesn’t want to bring or run outside code on a target machine and still allows you to find potential exploits for the targeted kernel.</p>
 
@@ -143,12 +193,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/spencerdodd.github.io/2017/09/01/pysploit/" data-toggle="tooltip" data-placement="top" title="pysploit">&larr; Previous Post</a>
+                        <a href="/2017/07/23/process-all-access/" data-toggle="tooltip" data-placement="top" title="Process All Access">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/spencerdodd.github.io/2017/10/31/radare2-intro/" data-toggle="tooltip" data-placement="top" title="Intro to radare2">Next Post &rarr;</a>
+                        <a href="/2017/10/31/radare2-intro/" data-toggle="tooltip" data-placement="top" title="Intro to radare2">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -168,7 +218,7 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <ul class="list-inline text-center">
                     <li>
-                        <a href="/spencerdodd.github.io/feed.xml">
+                        <a href="//feed.xml">
                             <span class="fa-stack fa-lg">
                                 <i class="fa fa-circle fa-stack-2x"></i>
                                 <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -189,20 +239,20 @@
                     
                     
                 </ul>
-                <p class="copyright text-muted">Copyright &copy; spencerdodd 2017</p>
+                <p class="copyright text-muted">Copyright &copy; spencerdodd 2018</p>
             </div>
         </div>
     </div>
 </footer>
 
 <!-- jQuery -->
-<script src="/spencerdodd.github.io/js/jquery.min.js "></script>
+<script src="//js/jquery.min.js "></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="/spencerdodd.github.io/js/bootstrap.min.js "></script>
+<script src="//js/bootstrap.min.js "></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="/spencerdodd.github.io/js/clean-blog.min.js "></script>
+<script src="//js/clean-blog.min.js "></script>
 
 
     
