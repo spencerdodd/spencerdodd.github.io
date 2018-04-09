@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "target='\__blank'"
+title:  "target='_blank'"
 subtitle: "around the web"
 date:   2018-03-28 12:00:00 -0500
 author: "coastal"
