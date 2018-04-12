@@ -17,6 +17,8 @@ I was messing about on a new social media site, [darto.com](https://darto.com), 
 
 The gist of the vulnerability is that when a new tab is opened, it retains some access to the original page that initiated the tab opening via the `window.opener` JavaScript API. The API can be used to set the location of the origin page by setting the value of `window.opener.location` to the website of choice. It is readily apparent that this could be used to implement a potent phishing attack. A user clicks a link and their focus is switched to the tab that was opened. The page, now filling the browser, executes JavaScript that changes the content of the previous tab to any site it pleases. This switch happens on page-load and while the user is looking at the new tab, so any page refreshing is not readily apparent.
 
+The exploit was very recently added to MITRE's Common Weakness Enumeration (CWE) database as [CWE-1022](https://cwe.mitre.org/data/definitions/1022.html).
+
 ### PoC || GTFO
 
 The exploit itself is very simple. The PoC I used is as follows:
@@ -29,7 +31,7 @@ The exploit itself is very simple. The PoC I used is as follows:
 </script>
 ```
 
-That's it. My PoC exploit page (the one that will be placed in a vulnerable `href`) can be found at [`https://spencerdodd.github.com/pocs/targetblank`](https://spencerdodd.github.com/pocs/targetblank). The phishing page is found at [`https://spencerdodd.github.com/pocs/targetblankd`](https://spencerdodd.github.com/pocs/targetblankd). Here is the exploit in action in two different vulnerable locations I found on the the website in question:
+That's it. My PoC exploit page (the one that will be placed in a vulnerable `href`) can be found at [`https://spencerdodd.github.com/pocs/targetblank`](https://spencerdodd.github.com/pocs/targetblank). My PoC simply redirects to another [PoC page](https://spencerdodd.github.com/pocs/targetblankd) highlighting the location change. Here is the exploit in action in two different vulnerable locations I found on the the website in question:
 
 ### user profile
 
@@ -105,3 +107,5 @@ I thought this was a cool vulnerability, and now that I know about it, I've been
 2. [darto.com](https://darto.com)
 
 3. [why not to use "target=\_blank"](https://css-tricks.com/use-target_blank/)
+
+4. [CWE definition](https://cwe.mitre.org/data/definitions/1022.html)
