@@ -17,7 +17,7 @@ I was messing about on a new social media site, [darto.com](https://darto.com), 
 
 The gist of the vulnerability is that when a new tab is opened, it retains some access to the original page that initiated the tab opening via the `window.opener` JavaScript API. The API can be used to set the location of the origin page by setting the value of `window.opener.location` to the website of choice. It is readily apparent that this could be used to implement a potent phishing attack. A user clicks a link and their focus is switched to the tab that was opened. The page, now filling the browser, executes JavaScript that changes the content of the previous tab to any site it pleases. This switch happens on page-load and while the user is looking at the new tab, so any page refreshing is not readily apparent.
 
-The exploit was very recently added to MITRE's Common Weakness Enumeration (CWE) database as [CWE-1022](https://cwe.mitre.org/data/definitions/1022.html).
+The vulnerability was very recently added to MITRE's Common Weakness Enumeration (CWE) database as [CWE-1022](https://cwe.mitre.org/data/definitions/1022.html).
 
 ### PoC || GTFO
 
